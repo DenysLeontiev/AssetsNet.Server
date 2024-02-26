@@ -1,3 +1,4 @@
+using AssetsNet.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AssetsNet.API.Data;
@@ -8,4 +9,6 @@ public class AssetsDbContext : DbContext
     {
         
     }
+
+    public DbSet<User> Users { get; set; }
 }
