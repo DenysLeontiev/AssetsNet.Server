@@ -1,4 +1,3 @@
-using AssetsNet.API.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

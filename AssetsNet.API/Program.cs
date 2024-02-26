@@ -1,7 +1,4 @@
-using AssetsNet.API.Data;
-using AssetsNet.API.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using AssetsNet.API.ExtensionMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AssetsDbContext>(opts => opts.UseSqlServer(connectionString));
-
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
-
+builder.Services.ConfigureAssetsDbContext(builder.Configuration);
+builder.Services.ConfigureIdentity();
 
 var app = builder.Build();
 
