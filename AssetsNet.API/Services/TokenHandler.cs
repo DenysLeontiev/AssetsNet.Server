@@ -16,7 +16,7 @@ public class TokenHandler : ITokenHandler
     }
 
 
-    public string CreateToken(User user, IList<string> roles)
+    public string CreateToken(User user)
         {
             var claims = new List<Claim>
             {
@@ -24,11 +24,6 @@ public class TokenHandler : ITokenHandler
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()), // Id
                 new Claim(JwtRegisteredClaimNames.Email, user.Email), // Email
             };
-
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
