@@ -2,6 +2,8 @@ using System.Text;
 using AssetsNet.API.Data;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces;
+using AssetsNet.API.Interfaces.Auth;
+using AssetsNet.API.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +37,7 @@ public static class ServiceExtensions
     public static void ConfigureServices(this IServiceCollection services)
     {
         services.AddScoped<ITokenHandler, Services.TokenHandler>();
+        services.AddScoped<IAuthService, AuthService>();
     }
 
     public static void ConfigureAuthentification(this IServiceCollection services, IConfiguration configuration)
@@ -54,7 +57,5 @@ public static class ServiceExtensions
                     ValidateAudience = false,
                 };
             });
-
-
     }
 }
