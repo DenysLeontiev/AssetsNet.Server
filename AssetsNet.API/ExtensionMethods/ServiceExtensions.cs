@@ -21,9 +21,10 @@ public static class ServiceExtensions
             opts.Password.RequireLowercase = false;
             opts.Password.RequireNonAlphanumeric = false;
             opts.Password.RequireUppercase = false;
+            opts.Password.RequiredLength = 4;
 
             opts.User.RequireUniqueEmail = true;
-            
+
         }).AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
     }
 }
