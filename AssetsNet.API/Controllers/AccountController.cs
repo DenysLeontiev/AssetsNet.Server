@@ -1,6 +1,8 @@
 using AssetsNet.API.DTOs;
+using AssetsNet.API.DTOs.User;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,15 +32,16 @@ public class AccountController : ControllerBase
 
         var result = await _userManager.CreateAsync(userToCreate, registerUserDto.Password);
 
-        if(result.Succeeded)
+        if (result.Succeeded)
         {
-            return Ok(new {
+            return Ok(new UserJwtDto
+            {
                 UserName = userToCreate.UserName,
                 Email = userToCreate.Email,
                 Token = _tokenHandler.CreateToken(userToCreate)
             });
         }
 
-        return BadRequest(result);
+        return BadRequest(result.Errors);
     }
 }

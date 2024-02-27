@@ -29,7 +29,7 @@ public static class ServiceExtensions
         }).AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
     }
 
-    public static void ConfigureServices(this IServiceCollection services)
+    public static void  (this IServiceCollection services)
     {
         services.AddScoped<ITokenHandler, Services.TokenHandler>();
     }
