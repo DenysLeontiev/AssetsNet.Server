@@ -1,5 +1,6 @@
 using AssetsNet.API.Data;
 using AssetsNet.API.Entities;
+using AssetsNet.API.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +27,10 @@ public static class ServiceExtensions
             opts.User.RequireUniqueEmail = true;
 
         }).AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
+    }
+
+    public static void ConfigureServices(this IServiceCollection services)
+    {
+        services.AddScoped<ITokenHandler, Services.TokenHandler>();
     }
 }

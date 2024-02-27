@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigureAssetsDbContext(builder.Configuration);
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureServices();
 
 var app = builder.Build();
 
