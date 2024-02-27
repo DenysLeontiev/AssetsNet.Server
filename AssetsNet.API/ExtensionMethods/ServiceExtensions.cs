@@ -1,8 +1,11 @@
+using System.Text;
 using AssetsNet.API.Data;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AssetsNet.API.ExtensionMethods;
 
@@ -29,8 +32,29 @@ public static class ServiceExtensions
         }).AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
     }
 
-    public static void  (this IServiceCollection services)
+    public static void ConfigureServices(this IServiceCollection services)
     {
         services.AddScoped<ITokenHandler, Services.TokenHandler>();
+    }
+
+    public static void ConfigureAuthentification(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(cfg =>
+        {
+            cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(opts =>
+            {
+                opts.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                };
+            });
+
+
     }
 }

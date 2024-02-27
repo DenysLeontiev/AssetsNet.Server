@@ -1,3 +1,4 @@
+using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.DTOs;
 using AssetsNet.API.DTOs.User;
 using AssetsNet.API.Entities;
@@ -8,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class AccountController : ControllerBase
+public class AccountController : BaseApiController
 {
     private readonly UserManager<User> _userManager;
     private readonly ITokenHandler _tokenHandler;
@@ -43,5 +42,12 @@ public class AccountController : ControllerBase
         }
 
         return BadRequest(result.Errors);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public ActionResult GetData()
+    {
+        return Ok("Data");
     }
 }
