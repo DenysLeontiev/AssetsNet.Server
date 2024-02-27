@@ -15,7 +15,15 @@ public static class ServiceExtensions
 
     public static void ConfigureIdentity(this IServiceCollection services)
     {
-        services.AddIdentity<User, IdentityRole>()
-            .AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
+        services.AddIdentity<User, IdentityRole>(opts =>
+        {
+            opts.Password.RequireDigit = false;
+            opts.Password.RequireLowercase = false;
+            opts.Password.RequireNonAlphanumeric = false;
+            opts.Password.RequireUppercase = false;
+
+            opts.User.RequireUniqueEmail = true;
+            
+        }).AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
     }
 }
