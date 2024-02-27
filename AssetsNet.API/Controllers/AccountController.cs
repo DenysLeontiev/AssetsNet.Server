@@ -3,6 +3,7 @@ using AssetsNet.API.DTOs;
 using AssetsNet.API.DTOs.User;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces;
+using AssetsNet.API.Interfaces.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,43 +12,28 @@ namespace AssetsNet.API.Controllers;
 
 public class AccountController : BaseApiController
 {
-    private readonly UserManager<User> _userManager;
-    private readonly ITokenHandler _tokenHandler;
+    private readonly IAuthService _authService;
 
-    public AccountController(UserManager<User> userManager, ITokenHandler tokenHandler)
+    public AccountController(IAuthService authService)
     {
-        _userManager = userManager;
-        _tokenHandler = tokenHandler;
+        _authService = authService;
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult> RegisterAsync([FromBody] RegisterUserDto registerUserDto)
+    public async Task<ActionResult<UserJwtDto>> RegisterAsync([FromBody] RegisterUserDto registerUserDto)
     {
-        var userToCreate = new User
+        try
         {
-            UserName = registerUserDto.UserName,
-            Email = registerUserDto.Email,
-        };
-
-        var result = await _userManager.CreateAsync(userToCreate, registerUserDto.Password);
-
-        if (result.Succeeded)
-        {
-            return Ok(new UserJwtDto
-            {
-                UserName = userToCreate.UserName,
-                Email = userToCreate.Email,
-                Token = _tokenHandler.CreateToken(userToCreate)
-            });
+            var result = await _authService.RegisterAsync(registerUserDto);
+            return Created("", result);
         }
-
-        return BadRequest(result.Errors);
-    }
-
-    [Authorize]
-    [HttpGet]
-    public ActionResult GetData()
-    {
-        return Ok("Data");
+        catch (ArgumentNullException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }
