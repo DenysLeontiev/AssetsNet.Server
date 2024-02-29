@@ -1,4 +1,5 @@
 using AssetsNet.API.ExtensionMethods;
+using AssetsNet.API.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,5 +30,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+
+var services = scope.ServiceProvider;
+
+var userSeedService = services.GetRequiredService<SeedAdminAccountService>();
+
+await userSeedService.InitializeContextAsync();
+await userSeedService.SeedAdminUserAsync();
 
 app.Run();
