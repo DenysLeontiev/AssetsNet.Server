@@ -12,14 +12,11 @@ public class AccountController : BaseApiController
 {
     private readonly IAuthService _authService;
     private readonly ILogger<AccountController> _logger;
-    private readonly IEmailService _emailService;
 
-    public AccountController(IAuthService authService, ILogger<AccountController> logger,
-        IEmailService emailService)
+    public AccountController(IAuthService authService, ILogger<AccountController> logger)
     {
         _authService = authService;
         _logger = logger;
-        _emailService = emailService;
     }
 
     [HttpPost("register")]
