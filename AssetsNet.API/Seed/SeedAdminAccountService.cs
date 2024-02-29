@@ -10,34 +10,14 @@ namespace AssetsNet.API.Seed;
 
 public class SeedAdminAccountService
 {
-    private readonly AssetsDbContext _dbContext;
     private readonly AdminAccountCredentials _adminCreds;
     private readonly UserManager<User> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
 
     public SeedAdminAccountService(IOptions<AdminAccountCredentials> options, 
-        UserManager<User> userManager,
-        AssetsDbContext dbContext,
-        RoleManager<IdentityRole> roleManager)
+        UserManager<User> userManager)
     {
         _adminCreds = options.Value;
         _userManager = userManager;
-        _dbContext = dbContext;
-        _roleManager = roleManager;
-    }
-
-    public async Task InitializeContextAsync()
-    {
-        if (_dbContext.Database.GetPendingMigrationsAsync().GetAwaiter().GetResult().Count() > 0)
-        {
-            await _dbContext.Database.MigrateAsync();
-        }
-
-        if (!await _roleManager.Roles.AnyAsync())
-        {
-            await _roleManager.CreateAsync(new IdentityRole { Name = DbRolesConsts.AdminRole });
-            await _roleManager.CreateAsync(new IdentityRole { Name = DbRolesConsts.MemberRole });
-        }
     }
 
     public async Task SeedAdminUserAsync()

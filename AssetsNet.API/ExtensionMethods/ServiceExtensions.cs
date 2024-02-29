@@ -44,6 +44,7 @@ public static class ServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IEmailService, Services.Email.EmailService>();
 
+        services.AddScoped<SeedRolesService>();
         services.AddScoped<SeedAdminAccountService>();
 
         services.Configure<AdminAccountCredentials>(configuration.GetSection("AdminAccountCredentials"));
