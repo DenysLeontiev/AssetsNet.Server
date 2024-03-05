@@ -24,16 +24,10 @@ public class StocksController : BaseApiController
 
         var stock = new Stock(
             quote.SummaryData.Name,
-            quote.SummaryData.Price.ToString("#,##0.00"),
-            quote.SummaryData.MarketCap.ToString("#,##0"),
-            quote.SummaryData.DollarChange.ToString("#,##0.00"),
-            quote.SummaryData.PercentChange.ToString("#0.0%"));
-
-        Console.WriteLine("Name: " + quote.SummaryData.Name);
-        Console.WriteLine("Price: " + quote.SummaryData.Price.ToString("#,##0.00"));
-        Console.WriteLine("MarketCap: " + quote.SummaryData.MarketCap.ToString("#,##0"));
-        Console.WriteLine("Change $: " + quote.SummaryData.DollarChange.ToString("#,##0.00"));
-        Console.WriteLine("Change %: " + quote.SummaryData.PercentChange.ToString("#0.0%"));
+            quote.SummaryData.Price,
+            quote.SummaryData.MarketCap,
+            quote.SummaryData.DollarChange,
+            quote.SummaryData.PercentChange);
 
         return Ok(stock);
     }
