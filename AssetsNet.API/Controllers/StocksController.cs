@@ -1,34 +1,26 @@
 using Aletheia.Service;
 using Aletheia.Service.StockData;
 using AssetsNet.API.Controllers.Common;
+using AssetsNet.API.Interfaces.Stock;
 using AssetsNet.API.Models.Stock;
+using AssetsNet.API.Services.Stocks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
 
 public class StocksController : BaseApiController
 {
-    private readonly IConfiguration _configuration;
+    private readonly IStockService _stockService;
 
-    public StocksController(IConfiguration configuration)
+    public StocksController(IStockService stockService)
     {
-        _configuration = configuration;
+        _stockService = stockService;
     }
 
     [HttpGet("{stockName}")]
     public async Task<ActionResult<Stock>> GetStockData([FromRoute] string stockName)
     {
-        string aletheiaApiKey = _configuration.GetValue<string>("AletheiaApiKey");
-        AletheiaService service = new AletheiaService(aletheiaApiKey);
-        StockData quote = await service.GetStockDataAsync(stockName, true, true); // AAPL
-
-        var stock = new Stock(
-            quote.SummaryData.Name,
-            quote.SummaryData.Price,
-            quote.SummaryData.MarketCap,
-            quote.SummaryData.DollarChange,
-            quote.SummaryData.PercentChange);
-
+        var stock = await _stockService.GetStockData(stockName);
         return Ok(stock);
     }
 }
