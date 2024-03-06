@@ -4,5 +4,5 @@ namespace AssetsNet.API.Interfaces.News;
 
 public interface INewsService
 {
-    Task<Models.News.News> GetNews(string companyName, string region = "US");    
+    Task<IEnumerable<Models.News.News>> GetNews(string companyName, string region = "US");    
 }
