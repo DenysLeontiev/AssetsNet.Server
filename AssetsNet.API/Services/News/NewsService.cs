@@ -15,7 +15,7 @@ public class NewsService : INewsService
         _configuration = configuration;
     }
 
-    public async Task<IEnumerable<Models.News.News>> GetNews(string companyName, string region = "US")
+    public async Task<IEnumerable<Models.News.News>> GetNewsAsync(string companyName, string region = "US")
     {
         var apiKey = _configuration.GetValue<string>("NewsRapindApi:X-RapidAPI-Key");
         var apiHost = _configuration.GetValue<string>("NewsRapindApi:X-RapidAPI-Host");
