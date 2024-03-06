@@ -16,7 +16,7 @@ public class NewsController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<Models.News.News>> Get([FromQuery] string companyName, [FromQuery] string region)
+    public async Task<ActionResult<Models.News.News>> Get([FromQuery] string companyName, [FromQuery] string region = "US")
     {
         var news = await _newsService.GetNewsAsync(companyName, region);
 
