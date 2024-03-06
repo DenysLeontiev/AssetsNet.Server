@@ -2,5 +2,5 @@ namespace AssetsNet.API.Models.News;
 
 public class Thumbnail
 {
-    public List<Resolution> Resolutions { get; set; }
+    public List<Resolution> Resolutions { get; set; } = new();
 }
