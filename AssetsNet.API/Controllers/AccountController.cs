@@ -44,9 +44,11 @@ public class AccountController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
-    //Dependency injection, Модульність та розділення відповідальності
+    
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto) 
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserJwtDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UserJwtDto>> Login([FromBody] LoginUserDto loginUserDto) 
     {
         try 
         {

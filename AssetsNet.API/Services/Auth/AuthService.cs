@@ -51,8 +51,6 @@ public class AuthService : IAuthService
         };
     }
 
-//TODO:: 
-
     public async Task<UserJwtDto> LoginAsync(LoginUserDto loginUserDto)
     {
         var userFromDb = await _userManager.FindByNameAsync(loginUserDto.UserName);
@@ -68,6 +66,7 @@ public class AuthService : IAuthService
         {
             throw new Exception("The password is incorrect");
         }
+        
         return new UserJwtDto
         {
             UserName = userFromDb.UserName,
