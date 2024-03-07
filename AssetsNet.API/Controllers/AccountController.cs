@@ -18,23 +18,12 @@ public class AccountController : BaseApiController
     private readonly IAuthService _authService;
     private readonly ILogger<AccountController> _logger;
 
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly ITokenHandler _tokenHandler;
-
     public AccountController(
         IAuthService authService,
-        ILogger<AccountController> logger,
-        UserManager<User> userManager,
-        SignInManager<User> signInManager,
-        ITokenHandler tokenHandler)
+        ILogger<AccountController> logger)
     {
         _authService = authService;
         _logger = logger;
-
-        _userManager = userManager; 
-        _signInManager = signInManager;
-        _tokenHandler = tokenHandler;
     }
 
     [HttpPost("register")]
@@ -59,25 +48,18 @@ public class AccountController : BaseApiController
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto) 
     {
-        User userFromDb = await _userManager.FindByNameAsync(loginUserDto.UserName);
-        if (userFromDb == null)
+        try 
         {
-            return BadRequest("This user wasn`t found in database");
+            var result = await _authService.LoginAsync(loginUserDto);
+            _logger.LogInformation($"Login to account was successful");
+
+            return Ok(result);
         }
-
-        var result = await _signInManager.CheckPasswordSignInAsync(userFromDb, loginUserDto.Password, false);
-        if (!result.Succeeded)
+        catch (Exception ex)
         {
-            return BadRequest("The password is incorrect");
+            _logger.LogError(ex.Message, "An error occured while login");
+            return BadRequest(ex.Message);
         }
-
-        return Ok(new UserJwtDto
-        {
-            UserName = userFromDb.UserName,
-            Email = userFromDb.Email,
-            Token = _tokenHandler.CreateToken(userFromDb)
-        }) ;
-
     }
 
     [Authorize]

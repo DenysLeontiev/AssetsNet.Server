@@ -6,21 +6,24 @@ using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.Email;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Services.Auth;
 
 public class AuthService : IAuthService
 {
+    private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
     private readonly ITokenHandler _tokenHandler;
     private readonly IEmailService _emailService;
 
-    public AuthService(UserManager<User> userManager, ITokenHandler tokenHandler,
+    public AuthService(SignInManager<User> signInManager ,UserManager<User> userManager, ITokenHandler tokenHandler,
         IEmailService emailService)
     {
         _userManager = userManager;
         _tokenHandler = tokenHandler;
         _emailService = emailService;
+        _signInManager = signInManager;
     }
 
     public async Task<UserJwtDto> RegisterAsync(RegisterUserDto registerUserDto)
@@ -45,6 +48,31 @@ public class AuthService : IAuthService
             UserName = userToCreate.UserName,
             Email = userToCreate.Email,
             Token = _tokenHandler.CreateToken(userToCreate)
+        };
+    }
+
+//TODO:: 
+
+    public async Task<UserJwtDto> LoginAsync(LoginUserDto loginUserDto)
+    {
+        var userFromDb = await _userManager.FindByNameAsync(loginUserDto.UserName);
+
+        if (userFromDb == null)
+        {
+            throw new Exception("This user wasn`t found in database");
+        }
+
+        var result = await _signInManager.CheckPasswordSignInAsync(userFromDb, loginUserDto.Password, false);
+
+        if (!result.Succeeded)
+        {
+            throw new Exception("The password is incorrect");
+        }
+        return new UserJwtDto
+        {
+            UserName = userFromDb.UserName,
+            Email = userFromDb.Email,
+            Token = _tokenHandler.CreateToken(userFromDb)
         };
     }
 
