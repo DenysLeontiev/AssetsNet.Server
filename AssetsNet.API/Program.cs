@@ -1,4 +1,5 @@
 using AssetsNet.API.ExtensionMethods;
+using AssetsNet.API.Interfaces;
 using AssetsNet.API.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.ConfigureAssetsDbContext(builder.Configuration);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureAuthentification(builder.Configuration);
+
 
 var app = builder.Build();
 
