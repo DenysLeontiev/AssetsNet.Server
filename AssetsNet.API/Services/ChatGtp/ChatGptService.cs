@@ -14,7 +14,7 @@ public class ChatGptService : IChatGptService
 
     public async Task<string> QueryChatGpt(string question, string? conversationId)
     {
-        var openAiKey = _configuration["ChatCgpt:ApiKey"];
+        var openAiKey = _configuration["ChatGpt:ApiKey"];
 
         var openai = new ChatGpt(openAiKey);
 
