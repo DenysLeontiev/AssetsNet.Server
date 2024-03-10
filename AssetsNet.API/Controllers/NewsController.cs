@@ -2,7 +2,6 @@ using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Models.News;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace AssetsNet.API.Controllers;
 
@@ -16,10 +15,18 @@ public class NewsController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<Models.News.News>> Get([FromQuery] string companyName, [FromQuery] string region = "US")
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<News>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<News>>> Get([FromQuery] string companyName, [FromQuery] string region = "US")
     {
-        var news = await _newsService.GetNewsAsync(companyName, region);
-
-        return Ok(news);
+        try
+        {
+            var news = await _newsService.GetNewsAsync(companyName, region);
+            return Ok(news);
+        } 
+        catch (HttpRequestException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
