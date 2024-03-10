@@ -1,5 +1,6 @@
 using AssetsNet.API.ExtensionMethods;
 using AssetsNet.API.Interfaces.News;
+using AssetsNet.API.Interfaces;
 using AssetsNet.API.Seed;
 using AssetsNet.API.Services.News;
 

@@ -6,6 +6,7 @@ namespace AssetsNet.API.Interfaces.Auth;
 
 public interface IAuthService
 {
+    Task<UserJwtDto> LoginAsync(LoginUserDto loginUserDto);
     Task<UserJwtDto> RegisterAsync(RegisterUserDto registerUserDto);
     Task ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
 }
