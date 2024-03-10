@@ -13,6 +13,7 @@ using AssetsNet.API.Seed.Models;
 using AssetsNet.API.Services.Auth;
 using AssetsNet.API.Services.ChatGtp;
 using AssetsNet.API.Services.News;
+using AssetsNet.API.Services.Stocks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
