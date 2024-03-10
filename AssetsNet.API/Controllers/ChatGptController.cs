@@ -16,8 +16,15 @@ public class ChatGptController : BaseApiController
     [HttpGet("query")]
     public async Task<ActionResult> GetResponse([FromQuery] string query, [FromQuery] string? conversationId = null)
     {
-        string response = await _chatGptService.QueryChatGpt(query, conversationId);
+        try
+        {
+            string response = await _chatGptService.QueryChatGpt(query, conversationId);
 
-        return Ok(response);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

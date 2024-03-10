@@ -14,12 +14,25 @@ public class ChatGptService : IChatGptService
 
     public async Task<string> QueryChatGpt(string question, string? conversationId)
     {
-        var openAiKey = _configuration["ChatGpt:ApiKey"];
+        if (string.IsNullOrEmpty(question))
+        {
+            throw new ArgumentNullException(nameof(question));
+        }
 
-        var openai = new ChatGpt(openAiKey);
+        var openAiKey = _configuration["ChatGpt:ApiKey"] 
+            ?? throw new ArgumentNullException("ChatGpt:ApiKey");
 
-        var response = await openai.Ask(question, conversationId);
+        try
+        {
+            var openai = new ChatGpt(openAiKey);
 
-        return response;
+            var response = await openai.Ask(question, conversationId);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error querying ChatGpt", ex);
+        } 
     }
 }
