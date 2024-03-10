@@ -1,7 +1,5 @@
-using Aletheia.Service;
-using Aletheia.Service.StockData;
 using AssetsNet.API.Interfaces.Stock;
-using AssetsNet.API.Models.Stock;
+using Newtonsoft.Json;
 
 namespace AssetsNet.API.Services.Stocks;
 
@@ -14,7 +12,7 @@ public class StockService : IStockService
         _configuration = configuration;
     }
 
-    public async Task<Stock> GetStockData(string stockName)
+    public async Task<Models.Stock.StockData> GetStockData(string stockName)
     {
 
         var client = new HttpClient();
@@ -33,20 +31,9 @@ public class StockService : IStockService
             response.EnsureSuccessStatusCode();
             var body = await response.Content.ReadAsStringAsync();
             Console.WriteLine(body);
+            var data = JsonConvert.DeserializeObject<Dictionary<string, Models.Stock.StockData>>(body);
         }
 
         return null;
-        // string aletheiaApiKey = _configuration.GetValue<string>("AletheiaApiKey");
-        // AletheiaService service = new AletheiaService(aletheiaApiKey);
-        // StockData quote = await service.GetStockDataAsync(stockName, true, true); // AAPL
-
-        // var stock = new Stock(
-        //     quote.SummaryData.Name,
-        //     quote.SummaryData.Price,
-        //     quote.SummaryData.MarketCap,
-        //     quote.SummaryData.DollarChange,
-        //     quote.SummaryData.PercentChange);
-
-        // return stock;
     }
 }
