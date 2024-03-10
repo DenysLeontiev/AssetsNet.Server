@@ -12,7 +12,7 @@ public class StocksController : BaseApiController
     {
         _stockService = stockService;
     }
-
+    
     [HttpGet("{stockName}")]
     public async Task<ActionResult> GetStockData([FromRoute] string stockName)
     {

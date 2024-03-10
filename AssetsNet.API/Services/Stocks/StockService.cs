@@ -16,24 +16,29 @@ public class StockService : IStockService
 
     public async Task<Models.Stock.StockData> GetStockData(string stockName)
     {
+        var url = "https://stock-prices2.p.rapidapi.com/api/v1/resources/stock-prices/1d?ticker=" + stockName;
+        var stockApiKey = _configuration["StocksRapidApi:X-RapidAPI-Key"]
+            ?? throw new ArgumentNullException("StocksRapidApi:X-RapidAPI-Key is not found in the configuration");
+
+        var stockApiHost = _configuration["StocksRapidApi:X-RapidAPI-Host"]
+        ?? throw new ArgumentNullException("StocksRapidApi:X-RapidAPI-Host is not found in the configuration");
 
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri("https://stock-prices2.p.rapidapi.com/api/v1/resources/stock-prices/1d?ticker=" + stockName),
+            RequestUri = new Uri(url),
             Headers =
                     {
-                        { "X-RapidAPI-Key", "e93439e715msh56fb70def110954p1f8153jsn4cdb8cbdbce2" },
-                        { "X-RapidAPI-Host", "stock-prices2.p.rapidapi.com" },
+                        { "X-RapidAPI-Key", stockApiKey },
+                        { "X-RapidAPI-Host", stockApiHost },
                     },
         };
         using var response = await _httpClient.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(body);
-        var data = JsonConvert.DeserializeObject<Dictionary<string, Models.Stock.StockData>>(body);
-        
-        return data!.First().Value;
+        var dataToReturn = JsonConvert.DeserializeObject<Dictionary<string, Models.Stock.StockData>>(body);
+
+        return dataToReturn!.First().Value;
     }
 }

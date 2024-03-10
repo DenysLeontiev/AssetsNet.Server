@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-
 namespace AssetsNet.API.Models.Stock;
 
 public class StockData
