@@ -1,6 +1,8 @@
 using AssetsNet.API.ExtensionMethods;
+using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces;
 using AssetsNet.API.Seed;
+using AssetsNet.API.Services.News;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +18,10 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureAuthentification(builder.Configuration);
 
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
