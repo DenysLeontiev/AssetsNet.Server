@@ -18,6 +18,8 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureAuthentification(builder.Configuration);
 
+builder.Services.AddCors();
+
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
@@ -31,6 +33,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(opt =>
+{
+    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200");
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
