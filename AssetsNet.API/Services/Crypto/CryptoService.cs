@@ -16,7 +16,7 @@ public class CryptoService : ICryptoService
         _httpClient = httpClient;
     }
 
-    public async Task<CryptoCurrencyData> GetCryptoCurrencyData(string? symbol = null)
+    public async Task<CryptoCurrencyData> GetCryptoCurrencyData(string symbol)
     {
         var apiKey = _configuration["Aletheia:ApiKey"]
             ?? throw new ArgumentNullException("Aletheia:ApiKey is null");
