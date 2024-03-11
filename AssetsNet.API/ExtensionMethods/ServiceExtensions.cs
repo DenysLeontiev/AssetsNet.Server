@@ -3,11 +3,15 @@ using AssetsNet.API.Data;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
+using AssetsNet.API.Interfaces.ChatGpt;
 using AssetsNet.API.Interfaces.Email;
+using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Models.Email;
 using AssetsNet.API.Seed;
 using AssetsNet.API.Seed.Models;
 using AssetsNet.API.Services.Auth;
+using AssetsNet.API.Services.ChatGtp;
+using AssetsNet.API.Services.News;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +47,8 @@ public static class ServiceExtensions
         services.AddScoped<ITokenHandler, Services.TokenHandler>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IEmailService, Services.Email.EmailService>();
+        services.AddScoped<IChatGptService, ChatGptService>();
+        services.AddScoped<INewsService, NewsService>();
 
         services.AddScoped<SeedRolesService>();
         services.AddScoped<SeedAdminAccountService>();
