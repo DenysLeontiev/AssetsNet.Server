@@ -1,8 +1,5 @@
 using AssetsNet.API.ExtensionMethods;
-using AssetsNet.API.Interfaces.News;
-using AssetsNet.API.Interfaces;
 using AssetsNet.API.Seed;
-using AssetsNet.API.Services.News;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +33,7 @@ app.UseHttpsRedirection();
 
 app.UseCors(opt =>
 {
-    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200");
+    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins(builder.Configuration.GetValue<string>("ClientUrl"));
 });
 
 app.UseAuthentication();
