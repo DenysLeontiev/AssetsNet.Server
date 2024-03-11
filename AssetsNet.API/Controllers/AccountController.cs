@@ -2,13 +2,8 @@ using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.DTOs;
 using AssetsNet.API.DTOs.Email;
 using AssetsNet.API.DTOs.User;
-using AssetsNet.API.Entities;
-using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
-using AssetsNet.API.Interfaces.Email;
-using AssetsNet.API.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
