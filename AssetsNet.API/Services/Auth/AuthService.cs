@@ -36,12 +36,12 @@ public class AuthService : IAuthService
 
         var result = await _userManager.CreateAsync(userToCreate, registerUserDto.Password);
 
-        await SendVerificationEmail(userToCreate);
-
         if (!result.Succeeded)
         {
             throw new Exception("User creation failed! Errors: " + string.Join(" ", result.Errors));
         }
+
+        await SendVerificationEmail(userToCreate);
 
         return new UserJwtDto
         {
