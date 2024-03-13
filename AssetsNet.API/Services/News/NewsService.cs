@@ -17,10 +17,10 @@ public class NewsService : INewsService
 
     public async Task<IEnumerable<Models.News.News>> GetNewsAsync(string companyName, string region)
     {
-        var apiKey = _configuration["NewsRapindApi:X-RapidAPI-Key"]
-            ?? throw new ArgumentNullException("NewsRapindApi:X-RapidAPI-Key is not found in the configuration");
-        var apiHost = _configuration["NewsRapindApi:X-RapidAPI-Host"]
-            ?? throw new ArgumentNullException("NewsRapindApi:X-RapidAPI-Host is not found in the configuration");
+        var apiKey = _configuration["NewsRapidApi:X-RapidAPI-Key"]
+            ?? throw new ArgumentNullException("NewsRapidApi:X-RapidAPI-Key is not found in the configuration");
+        var apiHost = _configuration["NewsRapidApi:X-RapidAPI-Host"]
+            ?? throw new ArgumentNullException("NewsRapidApi:X-RapidAPI-Host is not found in the configuration");
 
         if (string.IsNullOrWhiteSpace(companyName))
         {
