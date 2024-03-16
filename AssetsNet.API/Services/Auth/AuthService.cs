@@ -114,13 +114,13 @@ public class AuthService : IAuthService
 
             await _userManager.AddToRoleAsync(userToCreate, DbRolesConsts.MemberRole);
 
-            userJwtDto = await GetUserJwtDto(userToCreate);
+            userJwtDto = GetUserJwtDto(userToCreate);
 
             return userJwtDto;
         }
         else
         {
-            userJwtDto = await GetUserJwtDto(user);
+            userJwtDto = GetUserJwtDto(user);
             return userJwtDto;
         }
     }
@@ -158,7 +158,7 @@ public class AuthService : IAuthService
         await _emailService.SendEmailAsync(email);
     }
 
-    private async Task<UserJwtDto> GetUserJwtDto(User user)
+    private UserJwtDto GetUserJwtDto(User user)
     {
         return new UserJwtDto
         {
