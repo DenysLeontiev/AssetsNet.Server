@@ -64,6 +64,25 @@ public class AccountController : BaseApiController
         }
     }
 
+    [HttpPost("google-account")]
+	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserJwtDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+	public async Task<ActionResult<UserJwtDto>> GoogleAccount([FromBody] string credential)
+    {
+        try
+        {
+			var userJwt = await _authService.LoginWithGoogleAsync(credential);
+            _logger.LogInformation("User {UserName} logged in successfully.", userJwt.UserName);
+
+			return Created("", userJwt);
+		}
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message, "User login failed");
+			return BadRequest(ex.Message);
+		}
+    }
+
     [Authorize]
     [HttpPut("confirm-email")]
     [ProducesResponseType(StatusCodes.Status200OK)]

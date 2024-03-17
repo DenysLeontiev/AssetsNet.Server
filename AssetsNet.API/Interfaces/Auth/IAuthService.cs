@@ -8,5 +8,6 @@ public interface IAuthService
 {
     Task<UserJwtDto> LoginAsync(LoginUserDto loginUserDto);
     Task<UserJwtDto> RegisterAsync(RegisterUserDto registerUserDto);
+    Task<UserJwtDto> LoginWithGoogleAsync(string credentials);
     Task ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
 }

@@ -39,6 +39,7 @@ public static class ServiceExtensions
             opts.Password.RequireUppercase = false;
             opts.Password.RequiredLength = 4;
 
+            opts.User.AllowedUserNameCharacters = null;
             opts.User.RequireUniqueEmail = true;
 
         }).AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
