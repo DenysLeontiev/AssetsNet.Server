@@ -6,6 +6,7 @@ using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.ChatGpt;
 using AssetsNet.API.Interfaces.Email;
 using AssetsNet.API.Interfaces.News;
+using AssetsNet.API.Interfaces.Reddit;
 using AssetsNet.API.Interfaces.Stock;
 using AssetsNet.API.Models.Email;
 using AssetsNet.API.Seed;
@@ -13,6 +14,7 @@ using AssetsNet.API.Seed.Models;
 using AssetsNet.API.Services.Auth;
 using AssetsNet.API.Services.ChatGtp;
 using AssetsNet.API.Services.News;
+using AssetsNet.API.Services.Reddit;
 using AssetsNet.API.Services.Stocks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -50,9 +52,11 @@ public static class ServiceExtensions
         services.AddScoped<ITokenHandler, Services.TokenHandler>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IEmailService, Services.Email.EmailService>();
+
         services.AddScoped<IChatGptService, ChatGptService>();
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<IStockService, StockService>();
+        services.AddScoped<IRedditService, RedditService>();
 
         services.AddScoped<SeedRolesService>();
         services.AddScoped<SeedAdminAccountService>();
