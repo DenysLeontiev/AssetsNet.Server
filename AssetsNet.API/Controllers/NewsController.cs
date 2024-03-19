@@ -34,10 +34,19 @@ public class NewsController : BaseApiController
     }
 
     [HttpGet("reddit/{subreddit}/{redditTimePosted}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<string>> GetSubreddits([FromRoute] string subreddit, [FromRoute] int redditTimePosted)
     {
-        var data = await _redditService.GetRedditPosts(subreddit, redditTimePosted);
+        try
+        {
+            var data = await _redditService.GetRedditPosts(subreddit, redditTimePosted);
 
-        return Ok(data);
+            return Ok(data);
+        }
+        catch (HttpRequestException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
