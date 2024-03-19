@@ -1,5 +1,7 @@
 using AssetsNet.API.Helpers.Reddit;
 using AssetsNet.API.Interfaces.Reddit;
+using AssetsNet.API.Models.Reddit;
+using Newtonsoft.Json;
 
 namespace AssetsNet.API.Services.Reddit;
 
@@ -14,7 +16,7 @@ public class RedditService : IRedditService
         _httpClient = httpClient;
     }
 
-    public async Task<string> GetRedditPosts(string subreddit, int timePosted)
+    public async Task<IEnumerable<RedditPost>> GetRedditPosts(string subreddit, int timePosted)
     {
         var stockApiKey = _configuration["RedditRapidApi:X-RapidAPI-Key"]
             ?? throw new ArgumentNullException("RedditRapidApi:X-RapidAPI-Key is not found in the configuration");
@@ -39,8 +41,8 @@ public class RedditService : IRedditService
         using var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(body);
+        RedditRootObject result = JsonConvert.DeserializeObject<RedditRootObject>(body)!;
 
-        return body;
+        return result.Data.Posts;
     }
 }

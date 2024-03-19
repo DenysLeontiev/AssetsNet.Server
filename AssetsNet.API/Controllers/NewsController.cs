@@ -1,7 +1,9 @@
+using System.Collections;
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces.Reddit;
 using AssetsNet.API.Models.News;
+using AssetsNet.API.Models.Reddit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
@@ -36,7 +38,7 @@ public class NewsController : BaseApiController
     [HttpGet("reddit/{subreddit}/{redditTimePosted}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<string>> GetSubreddits([FromRoute] string subreddit, [FromRoute] int redditTimePosted)
+    public async Task<ActionResult<IEnumerable<RedditPost>>> GetSubreddits([FromRoute] string subreddit, [FromRoute] int redditTimePosted)
     {
         try
         {
