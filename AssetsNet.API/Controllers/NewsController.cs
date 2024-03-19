@@ -1,5 +1,6 @@
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.News;
+using AssetsNet.API.Interfaces.Reddit;
 using AssetsNet.API.Models.News;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,12 @@ namespace AssetsNet.API.Controllers;
 public class NewsController : BaseApiController
 {
     private readonly INewsService _newsService;
+    private readonly IRedditService _redditService;
 
-    public NewsController(INewsService newsService)
+    public NewsController(INewsService newsService, IRedditService redditService)
     {
         _newsService = newsService;
+        _redditService = redditService;
     }
 
     [HttpGet]
@@ -23,10 +26,18 @@ public class NewsController : BaseApiController
         {
             var news = await _newsService.GetNewsAsync(companyName, region);
             return Ok(news);
-        } 
+        }
         catch (HttpRequestException e)
         {
             return BadRequest(e.Message);
         }
+    }
+
+    [HttpGet("reddit/{subreddit}/{redditTimePosted}")]
+    public async Task<ActionResult<string>> GetSubreddits([FromRoute] string subreddit, [FromRoute] int redditTimePosted)
+    {
+        var data = await _redditService.GetRedditPosts(subreddit, redditTimePosted);
+
+        return Ok(data);
     }
 }
