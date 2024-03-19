@@ -43,6 +43,6 @@ public class RedditService : IRedditService
         var body = await response.Content.ReadAsStringAsync();
         RedditRootObject result = JsonConvert.DeserializeObject<RedditRootObject>(body)!;
 
-        return result.Data.Posts;
+        return result!.Data!.Posts!;
     }
 }
