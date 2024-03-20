@@ -18,7 +18,7 @@ public class TwitterService : ITwitterService
         _httpClient = httpClient;
     }
 
-    public async Task<string> GetTwitterPosts(string query, int? searchType)
+    public async Task<string> GetTwitterPosts(string query, int? searchType = null)
     {
         string url = searchType != null ? $"https://twitter-api45.p.rapidapi.com/search.php?query={query}&search_type={(TwitterSeacrhType)searchType}" :
             $"https://twitter-api45.p.rapidapi.com/search.php?query={query}";

@@ -2,6 +2,7 @@ using System.Collections;
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces.Reddit;
+using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.News;
 using AssetsNet.API.Models.Reddit;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,14 @@ public class NewsController : BaseApiController
 {
     private readonly INewsService _newsService;
     private readonly IRedditService _redditService;
+    private readonly ITwitterService _twitterService;
 
-    public NewsController(INewsService newsService, IRedditService redditService)
+    public NewsController(INewsService newsService, IRedditService redditService,
+        ITwitterService twitterService)
     {
         _newsService = newsService;
         _redditService = redditService;
+        _twitterService = twitterService;
     }
 
     [HttpGet]
@@ -50,5 +54,13 @@ public class NewsController : BaseApiController
         {
             return BadRequest(e.Message);
         }
+    }
+
+    [HttpGet("twitter/{query}")]
+    public async Task<ActionResult<string>> GetTweets([FromRoute] string query)
+    {
+        var data = await _twitterService.GetTwitterPosts(query);
+
+        return Ok(data);
     }
 }
