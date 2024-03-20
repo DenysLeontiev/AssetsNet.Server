@@ -42,17 +42,25 @@ public class TwitterService : ITwitterService
             },
         };
 
-        using var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
-
-        var options = new JsonSerializerOptions
+        try
         {
-            PropertyNameCaseInsensitive = true
-        };
 
-        TwitterRootObject result = System.Text.Json.JsonSerializer.Deserialize<TwitterRootObject>(body, options)!;
+            using var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
 
-        return result.Timeline;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            TwitterRootObject result = System.Text.Json.JsonSerializer.Deserialize<TwitterRootObject>(body, options)!;
+
+            return result.Timeline;
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new HttpRequestException($"Error while getting tweets for '{query}' from Twitter", ex);
+        }
     }
 }
