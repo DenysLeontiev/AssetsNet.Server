@@ -1,4 +1,5 @@
 using AssetsNet.API.Controllers.Common;
+using AssetsNet.API.DTOs.ChatGpt;
 using AssetsNet.API.Interfaces.ChatGpt;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,14 @@ public class ChatGptController : BaseApiController
         _chatGptService = chatGptService;
     }
 
-    [HttpGet("query")]
-    public async Task<ActionResult> GetResponse([FromQuery] string query, [FromQuery] string? conversationId = null)
+    [HttpPost("query")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ChatGptResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ChatGptResponseDto>> GetResponse([FromBody] ChatGptQueryDto queryDto)
     {
         try
         {
-            string response = await _chatGptService.QueryChatGpt(query, conversationId);
+            var response = await _chatGptService.QueryChatGpt(queryDto.Query, queryDto.ConversationId);
 
             return Ok(response);
         }
