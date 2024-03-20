@@ -1,7 +1,6 @@
 using System.Text.Json;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.Twitter;
-using Newtonsoft.Json;
 
 namespace AssetsNet.API.Services.Twitter;
 
@@ -54,7 +53,7 @@ public class TwitterService : ITwitterService
                 PropertyNameCaseInsensitive = true
             };
 
-            TwitterRootObject result = System.Text.Json.JsonSerializer.Deserialize<TwitterRootObject>(body, options)!;
+            TwitterRootObject result = JsonSerializer.Deserialize<TwitterRootObject>(body, options)!;
 
             return result.Timeline;
         }
