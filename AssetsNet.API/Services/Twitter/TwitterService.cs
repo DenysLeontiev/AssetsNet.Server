@@ -1,5 +1,7 @@
+using System.Text.Json;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.Twitter;
+using Newtonsoft.Json;
 
 namespace AssetsNet.API.Services.Twitter;
 
@@ -43,6 +45,14 @@ public class TwitterService : ITwitterService
         using var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        TwitterRootObject result = System.Text.Json.JsonSerializer.Deserialize<TwitterRootObject>(body,options)!;
+
         return body;
     }
 }
