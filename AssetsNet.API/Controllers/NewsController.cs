@@ -57,7 +57,7 @@ public class NewsController : BaseApiController
     }
 
     [HttpGet("twitter/{query}")]
-    public async Task<ActionResult<string>> GetTweets([FromRoute] string query)
+    public async Task<ActionResult<string>> GetTweets([FromRoute] string query, [FromQuery] int? searchType = null)
     {
         var data = await _twitterService.GetTwitterPosts(query);
 
