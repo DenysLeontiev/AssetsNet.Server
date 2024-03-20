@@ -62,8 +62,15 @@ public class NewsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<TwitterPost>>> GetTweets([FromRoute] string query, [FromQuery] int? searchType = null)
     {
-        var data = await _twitterService.GetTwitterPosts(query);
+        try
+        {
+            var data = await _twitterService.GetTwitterPosts(query);
 
-        return Ok(data);
+            return Ok(data);
+        }
+        catch (HttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }
