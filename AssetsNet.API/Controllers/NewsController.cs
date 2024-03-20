@@ -5,6 +5,7 @@ using AssetsNet.API.Interfaces.Reddit;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.News;
 using AssetsNet.API.Models.Reddit;
+using AssetsNet.API.Models.Twitter;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
@@ -40,7 +41,7 @@ public class NewsController : BaseApiController
     }
 
     [HttpGet("reddit/{subreddit}/{redditTimePosted}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RedditPost>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<RedditPost>>> GetSubreddits([FromRoute] string subreddit, [FromRoute] int redditTimePosted)
     {
@@ -57,7 +58,9 @@ public class NewsController : BaseApiController
     }
 
     [HttpGet("twitter/{query}")]
-    public async Task<ActionResult<string>> GetTweets([FromRoute] string query, [FromQuery] int? searchType = null)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TwitterPost>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<TwitterPost>>> GetTweets([FromRoute] string query, [FromQuery] int? searchType = null)
     {
         var data = await _twitterService.GetTwitterPosts(query);
 

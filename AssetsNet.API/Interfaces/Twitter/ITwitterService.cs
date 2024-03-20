@@ -4,5 +4,5 @@ namespace AssetsNet.API.Interfaces.Twitter;
 
 public interface ITwitterService
 {
-    Task<string> GetTwitterPosts(string query, int? searchType = null);
+    Task<IEnumerable<TwitterPost>> GetTwitterPosts(string query, int? searchType = null);
 }
