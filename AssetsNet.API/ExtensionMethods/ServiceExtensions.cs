@@ -1,6 +1,7 @@
 using System.Text;
 using AssetsNet.API.Data;
 using AssetsNet.API.Entities;
+using AssetsNet.API.Helpers.Photo;
 using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.ChatGpt;
@@ -63,6 +64,7 @@ public static class ServiceExtensions
 
         services.Configure<AdminAccountCredentials>(configuration.GetSection("AdminAccountCredentials"));
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+        services.Configure<CloudinaryCredentials>(configuration.GetSection("CloudinarySettings"));
     }
 
     public static void ConfigureAuthentification(this IServiceCollection services, IConfiguration configuration)
