@@ -9,8 +9,10 @@ using AssetsNet.API.Interfaces.Email;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Reddit;
+using AssetsNet.API.Interfaces.Repositories;
 using AssetsNet.API.Interfaces.Stock;
 using AssetsNet.API.Models.Email;
+using AssetsNet.API.Repositories.User;
 using AssetsNet.API.Seed;
 using AssetsNet.API.Seed.Models;
 using AssetsNet.API.Services.Auth;
@@ -61,6 +63,8 @@ public static class ServiceExtensions
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<IStockService, StockService>();
         services.AddScoped<IRedditService, RedditService>();
+
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddScoped<SeedRolesService>();
         services.AddScoped<SeedAdminAccountService>();
