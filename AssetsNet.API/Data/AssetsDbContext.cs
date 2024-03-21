@@ -10,4 +10,6 @@ public class AssetsDbContext : IdentityDbContext<User>
     {
         
     }
+
+    public DbSet<Photo> Photos { get; set; }
 }
