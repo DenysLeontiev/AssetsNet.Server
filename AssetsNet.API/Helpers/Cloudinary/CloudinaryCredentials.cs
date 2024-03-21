@@ -1,4 +1,4 @@
-﻿namespace AssetsNet.API.Helpers.Photo;
+﻿namespace AssetsNet.API.Helpers.Cloudinary;
 
 public class CloudinaryCredentials
 {

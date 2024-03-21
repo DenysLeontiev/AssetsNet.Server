@@ -1,7 +1,7 @@
 using System.Text;
 using AssetsNet.API.Data;
 using AssetsNet.API.Entities;
-using AssetsNet.API.Helpers.Photo;
+using AssetsNet.API.Helpers.Cloudinary;
 using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.ChatGpt;
