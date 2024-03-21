@@ -1,6 +1,7 @@
 using System.Collections;
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.News;
+using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Reddit;
 using AssetsNet.API.Models.News;
 using AssetsNet.API.Models.Reddit;
@@ -12,11 +13,13 @@ public class NewsController : BaseApiController
 {
     private readonly INewsService _newsService;
     private readonly IRedditService _redditService;
+    private readonly IPhotoService _photoService;
 
-    public NewsController(INewsService newsService, IRedditService redditService)
+    public NewsController(INewsService newsService, IRedditService redditService,IPhotoService photoService)
     {
         _newsService = newsService;
         _redditService = redditService;
+        _photoService = photoService;
     }
 
     [HttpGet]
