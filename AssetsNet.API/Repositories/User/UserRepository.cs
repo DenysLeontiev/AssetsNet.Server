@@ -19,12 +19,12 @@ public class UserRepository : IUserRepository
         _photoService = photoService;
     }
     
-    public async Task<Photo> UploadProfilePhotoAsync(UploadProfilePhotoDto uploadProfilePhotoDto)
+    public async Task<Photo> UploadProfilePhotoAsync(IFormFile file, string userId)
     {
         var userToUpdateProfilePhoto = await _context.Users.Include(x => x.ProfilePhoto)
-            .FirstOrDefaultAsync(x => x.Id.Equals(uploadProfilePhotoDto.UserId));
+            .FirstOrDefaultAsync(x => x.Id.Equals(userId));
 
-        var photo = await _photoService.UploadAsync(uploadProfilePhotoDto.ProfilePhoto);
+        var photo = await _photoService.UploadAsync(file);
 
         userToUpdateProfilePhoto!.ProfilePhoto = photo;
 
