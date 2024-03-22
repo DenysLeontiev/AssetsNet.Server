@@ -19,7 +19,7 @@ public class UserRepository : IUserRepository
         _photoService = photoService;
     }
     
-    public async Task<Photo> UploadProfilePhotoDto(UploadProfilePhotoDto uploadProfilePhotoDto)
+    public async Task<Photo> UploadProfilePhotoAsync(UploadProfilePhotoDto uploadProfilePhotoDto)
     {
         var userToUpdateProfilePhoto = await _context.Users.Include(x => x.ProfilePhoto)
             .FirstOrDefaultAsync(x => x.Id.Equals(uploadProfilePhotoDto.UserId));

@@ -4,5 +4,5 @@ namespace AssetsNet.API.Interfaces.Repositories;
 
 public interface IUserRepository
 {
-    Task<Entities.Photo> UploadProfilePhotoDto(UploadProfilePhotoDto uploadProfilePhotoDto);
+    Task<Entities.Photo> UploadProfilePhotoAsync(UploadProfilePhotoDto uploadProfilePhotoDto);
 }

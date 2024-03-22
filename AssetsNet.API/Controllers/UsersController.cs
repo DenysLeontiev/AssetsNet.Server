@@ -20,7 +20,7 @@ public class UsersController : BaseApiController
     {
         string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var uploadedPhoto = await _userRepository.UploadProfilePhotoDto(uploadProfilePhotoDto);
+        var uploadedPhoto = await _userRepository.UploadProfilePhotoAsync(uploadProfilePhotoDto);
 
         return Ok(uploadedPhoto);
     }
