@@ -4,18 +4,16 @@ using AssetsNet.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AssetsNet.API.Data.Migrations
+namespace AssetsNet.API.Migrations
 {
     [DbContext(typeof(AssetsDbContext))]
-    [Migration("20240321144959_AddedUserPhotoRelation")]
-    partial class AddedUserPhotoRelation
+    partial class AssetsDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,13 +37,13 @@ namespace AssetsNet.API.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Photos");
                 });
@@ -255,9 +253,7 @@ namespace AssetsNet.API.Data.Migrations
                 {
                     b.HasOne("AssetsNet.API.Entities.User", "User")
                         .WithOne("ProfilePhoto")
-                        .HasForeignKey("AssetsNet.API.Entities.Photo", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AssetsNet.API.Entities.Photo", "UserId");
 
                     b.Navigation("User");
                 });
@@ -315,8 +311,7 @@ namespace AssetsNet.API.Data.Migrations
 
             modelBuilder.Entity("AssetsNet.API.Entities.User", b =>
                 {
-                    b.Navigation("ProfilePhoto")
-                        .IsRequired();
+                    b.Navigation("ProfilePhoto");
                 });
 #pragma warning restore 612, 618
         }
