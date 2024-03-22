@@ -16,12 +16,20 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("upload-profile-photo")]
-    public async Task<ActionResult> UploadProfilePhoto([FromForm] UploadProfilePhotoDto uploadProfilePhotoDto)
+    public async Task<ActionResult<PhotoDto>> UploadProfilePhoto([FromForm] UploadProfilePhotoDto uploadProfilePhotoDto)
     {
-        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 
-        var uploadedPhoto = await _userRepository.UploadProfilePhotoAsync(uploadProfilePhotoDto);
+        var uploadedPhoto = await _userRepository.UploadProfilePhotoAsync(uploadProfilePhotoDto.ProfilePhoto, userId);
 
-        return Ok(uploadedPhoto);
+        var photoDto = new PhotoDto
+        {
+            Id = uploadedPhoto.Id!,
+            PublicId = uploadedPhoto.PublicId,
+            PhotoUrl = uploadedPhoto.PhotoUrl,
+            UserId = uploadedPhoto.UserId!
+        };
+
+        return Ok(photoDto);
     }
 }
