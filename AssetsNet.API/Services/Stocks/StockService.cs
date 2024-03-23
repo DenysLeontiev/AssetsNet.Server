@@ -65,7 +65,7 @@ public class StockService : IStockService
             var body = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<Models.Stock.HeaderStockData>(body);
 
-            if (data != null && data.symbol != "")
+            if (data != null && data.Symbol != "")
             {
                 stockDataList.Add(data);
             }
