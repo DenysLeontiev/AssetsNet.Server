@@ -23,7 +23,7 @@ public class StocksController : BaseApiController
     [HttpGet("stockdata")]
     public async Task<ActionResult<List<Models.Stock.HeaderStockData>>> GetStockData([FromQuery] List<string> stockNames)
     {
-        var stockData = await _stockService.GetStockDatas(stockNames);
+        var stockData = await _stockService.GetStockDataList(stockNames);
         return Ok(stockData);
     }
 
