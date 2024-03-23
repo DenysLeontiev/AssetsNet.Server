@@ -15,7 +15,7 @@ public class StocksController : BaseApiController
     }
 
     [HttpPost("stocks-list")]
-    public async Task<ActionResult<List<HeaderStockData>>> GetStockData([FromBody] List<string> stockNames)
+    public async Task<ActionResult<IEnumerable<HeaderStockData>>> GetStockData([FromBody] List<string> stockNames)
     {
         try
         {
