@@ -1,5 +1,6 @@
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.Stock;
+using AssetsNet.API.Models.Stock;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
@@ -14,10 +15,17 @@ public class StocksController : BaseApiController
     }
 
     [HttpPost("stocks-list")]
-    public async Task<ActionResult<List<Models.Stock.HeaderStockData>>> GetStockData([FromBody] List<string> stockNames)
+    public async Task<ActionResult<List<HeaderStockData>>> GetStockData([FromBody] List<string> stockNames)
     {
-        var stockData = await _stockService.GetStockDataList(stockNames);
-        return Ok(stockData);
+        try
+        {
+            var stockData = await _stockService.GetStockDataList(stockNames);
+            return Ok(stockData);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("{stockName}")]

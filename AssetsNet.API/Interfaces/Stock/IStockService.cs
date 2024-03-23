@@ -1,7 +1,9 @@
+using AssetsNet.API.Models.Stock;
+
 namespace AssetsNet.API.Interfaces.Stock;
 
 public interface IStockService
 {
-    Task<Models.Stock.StockData> GetStockData(string stockName);
-    Task<List<Models.Stock.HeaderStockData>> GetStockDataList(List<string> stockNames);
+    Task<StockData> GetStockData(string stockName);
+    Task<IEnumerable<HeaderStockData>> GetStockDataList(IEnumerable<string> stockNames);
 }
