@@ -19,4 +19,12 @@ public class StocksController : BaseApiController
         var stock = await _stockService.GetStockData(stockName);
         return Ok(stock);
     }
+
+    [HttpGet("stockdata")]
+    public async Task<ActionResult<List<Models.Stock.HeaderStockData>>> GetStockData([FromQuery] List<string> stockNames)
+    {
+        var stockData = await _stockService.GetStockDatas(stockNames);
+        return Ok(stockData);
+    }
+
 }

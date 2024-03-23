@@ -41,4 +41,36 @@ public class StockService : IStockService
 
         return dataToReturn!.First().Value;
     }
+
+    public async Task<List<Models.Stock.HeaderStockData>> GetStockDatas(List<string> stockNames)
+    {
+        var Key = _configuration["StocksTwelveDataApi:StocksTwelveDataApiKey"];
+        var baseUri = "https://api.twelvedata.com/quote";
+        var stockDataList = new List<Models.Stock.HeaderStockData>();
+
+        foreach (var name in stockNames)
+        {
+            var queryString = $"symbol={Uri.EscapeDataString(name)}";
+            var url = $"{baseUri}?{queryString}&apikey={Key}";
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url),
+            };
+
+            using var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<Models.Stock.HeaderStockData>(body);
+
+            if (data != null && data.symbol != "")
+            {
+                stockDataList.Add(data);
+            }
+        }
+
+        return stockDataList;
+    }
 }
