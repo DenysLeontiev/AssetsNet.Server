@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace AssetsNet.API.Models.Stock
@@ -9,7 +8,7 @@ namespace AssetsNet.API.Models.Stock
         public string? Symbol { get; set; }
         public string? Name { get; set; }
         public string? Exchange { get; set; }
-        [JsonPropertyName("mic_code")]
+        [JsonProperty("mic_code")]
         public string? MicCode { get; set; }
         public string? Currency { get; set; }
         public string? Timestamp { get; set; }

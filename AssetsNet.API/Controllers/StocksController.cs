@@ -12,19 +12,18 @@ public class StocksController : BaseApiController
     {
         _stockService = stockService;
     }
-    
+
+    [HttpPost("stocks-list")]
+    public async Task<ActionResult<List<Models.Stock.HeaderStockData>>> GetStockData([FromBody] List<string> stockNames)
+    {
+        var stockData = await _stockService.GetStockDataList(stockNames);
+        return Ok(stockData);
+    }
+
     [HttpGet("{stockName}")]
     public async Task<ActionResult> GetStockData([FromRoute] string stockName)
     {
         var stock = await _stockService.GetStockData(stockName);
         return Ok(stock);
     }
-
-    [HttpGet("stockdata")]
-    public async Task<ActionResult<List<Models.Stock.HeaderStockData>>> GetStockData([FromQuery] List<string> stockNames)
-    {
-        var stockData = await _stockService.GetStockDataList(stockNames);
-        return Ok(stockData);
-    }
-
 }
