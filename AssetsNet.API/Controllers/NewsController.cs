@@ -3,8 +3,10 @@ using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Reddit;
+using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.News;
 using AssetsNet.API.Models.Reddit;
+using AssetsNet.API.Models.Twitter;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
@@ -13,13 +15,13 @@ public class NewsController : BaseApiController
 {
     private readonly INewsService _newsService;
     private readonly IRedditService _redditService;
-    private readonly IPhotoService _photoService;
+    private readonly ITwitterService _twitterService;
 
-    public NewsController(INewsService newsService, IRedditService redditService,IPhotoService photoService)
+    public NewsController(INewsService newsService, IRedditService redditService, ITwitterService twitterService)
     {
         _newsService = newsService;
         _redditService = redditService;
-        _photoService = photoService;
+        _twitterService = twitterService;
     }
 
     [HttpGet]
@@ -39,7 +41,7 @@ public class NewsController : BaseApiController
     }
 
     [HttpGet("reddit/{subreddit}/{redditTimePosted}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RedditPost>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<RedditPost>>> GetSubreddits([FromRoute] string subreddit, [FromRoute] int redditTimePosted)
     {
@@ -52,6 +54,23 @@ public class NewsController : BaseApiController
         catch (HttpRequestException e)
         {
             return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("twitter/{query}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TwitterPost>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<TwitterPost>>> GetTweets([FromRoute] string query, [FromQuery] int? searchType = null)
+    {
+        try
+        {
+            var data = await _twitterService.GetTwitterPosts(query);
+
+            return Ok(data);
+        }
+        catch (HttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }
