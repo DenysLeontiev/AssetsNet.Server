@@ -1,6 +1,7 @@
 using System.Collections;
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.Interfaces.News;
+using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Reddit;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.News;
@@ -16,8 +17,7 @@ public class NewsController : BaseApiController
     private readonly IRedditService _redditService;
     private readonly ITwitterService _twitterService;
 
-    public NewsController(INewsService newsService, IRedditService redditService,
-        ITwitterService twitterService)
+    public NewsController(INewsService newsService, IRedditService redditService, ITwitterService twitterService)
     {
         _newsService = newsService;
         _redditService = redditService;
