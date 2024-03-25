@@ -1,3 +1,4 @@
+using AssetsNet.API.DTOs.ChatGpt;
 using AssetsNet.API.Interfaces.ChatGpt;
 using ChatGPT.Net;
 
@@ -12,7 +13,7 @@ public class ChatGptService : IChatGptService
         _configuration = configuration;
     }
 
-    public async Task<string> QueryChatGpt(string question, string? conversationId)
+    public async Task<ChatGptResponseDto> QueryChatGpt(string question, string? conversationId)
     {
         if (string.IsNullOrEmpty(question))
         {
@@ -28,7 +29,10 @@ public class ChatGptService : IChatGptService
 
             var response = await openai.Ask(question, conversationId);
 
-            return response;
+            return new ChatGptResponseDto
+            {
+                Response = response,
+            };
         }
         catch (Exception ex)
         {

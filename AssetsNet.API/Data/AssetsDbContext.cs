@@ -10,4 +10,21 @@ public class AssetsDbContext : IdentityDbContext<User>
     {
         
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<User>()
+            .HasOne(u => u.ProfilePhoto)
+            .WithOne(p => p.User)
+            .HasForeignKey<Photo>(p => p.UserId);
+
+        builder.Entity<Photo>()
+            .HasOne(p => p.User)
+            .WithOne(u => u.ProfilePhoto)
+            .HasForeignKey<Photo>(p => p.UserId);
+    }
+
+    public DbSet<Photo> Photos { get; set; }
 }

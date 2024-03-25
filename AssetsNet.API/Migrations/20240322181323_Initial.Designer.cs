@@ -4,16 +4,18 @@ using AssetsNet.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AssetsNet.API.Data.Migrations
+namespace AssetsNet.API.Migrations
 {
     [DbContext(typeof(AssetsDbContext))]
-    partial class AssetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240322181323_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,32 @@ namespace AssetsNet.API.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AssetsNet.API.Entities.Photo", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Photos");
+                });
 
             modelBuilder.Entity("AssetsNet.API.Entities.User", b =>
                 {
@@ -223,6 +251,15 @@ namespace AssetsNet.API.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AssetsNet.API.Entities.Photo", b =>
+                {
+                    b.HasOne("AssetsNet.API.Entities.User", "User")
+                        .WithOne("ProfilePhoto")
+                        .HasForeignKey("AssetsNet.API.Entities.Photo", "UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -272,6 +309,11 @@ namespace AssetsNet.API.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AssetsNet.API.Entities.User", b =>
+                {
+                    b.Navigation("ProfilePhoto");
                 });
 #pragma warning restore 612, 618
         }
