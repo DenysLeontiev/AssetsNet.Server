@@ -14,6 +14,7 @@ builder.Services.ConfigureAssetsDbContext(builder.Configuration);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureAuthentification(builder.Configuration);
+builder.Services.ConfigureAutoMapper();
 
 builder.Services.AddCors();
 
