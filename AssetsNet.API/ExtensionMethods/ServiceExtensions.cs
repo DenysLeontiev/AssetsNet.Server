@@ -54,6 +54,11 @@ public static class ServiceExtensions
         }).AddEntityFrameworkStores<AssetsDbContext>().AddDefaultTokenProviders();
     }
 
+    public static void ConfigureAutoMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    }
+
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ITokenHandler, Services.TokenHandler>();
