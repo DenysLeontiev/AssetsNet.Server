@@ -62,4 +62,46 @@ public class TwitterService : ITwitterService
             throw new HttpRequestException($"Error while getting tweets for '{query}' from Twitter", ex);
         }
     }
+
+    public async Task<IEnumerable<TwitterPost>> GetUserMedia(string screenName = "Stocktwits")
+    {
+        var url = "https://twitter-api45.p.rapidapi.com/usermedia.php?screenname=" + screenName;
+
+        var apiKey = _configuration["TwitterRapidApi:X-RapidAPI-Key"]
+           ?? throw new ArgumentNullException("TwitterRapidApi:X-RapidAPI-Key is not found in the configuration");
+
+        var stockApiHost = _configuration["TwitterRapidApi:X-RapidAPI-Host"]
+            ?? throw new ArgumentNullException("TwitterRapidApi:X-RapidAPI-Host is not found in the configuration");
+
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(url),
+            Headers =
+            {
+                { "X-RapidAPI-Key", apiKey },
+                { "X-RapidAPI-Host", stockApiHost },
+            },
+        };
+
+        try
+        {
+            using var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            TwitterRootObject result = JsonSerializer.Deserialize<TwitterRootObject>(body, options)!;
+
+            return result.Timeline;
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new HttpRequestException($"Error while getting tweets from '{screenName}' from Twitter", ex);
+        }
+    }
 }
