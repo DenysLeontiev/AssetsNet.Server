@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.Twitter;
+using AssetsNet.API.Models.Twitter.TwitterUsersMedia;
 
 namespace AssetsNet.API.Services.Twitter;
 
@@ -63,7 +64,7 @@ public class TwitterService : ITwitterService
         }
     }
 
-    public async Task<IEnumerable<TwitterPost>> GetUserMedia(string screenName = "Stocktwits")
+    public async Task<IEnumerable<TwitterUserMediaPost>> GetUserMedia(string screenName = "Stocktwits")
     {
         var url = "https://twitter-api45.p.rapidapi.com/usermedia.php?screenname=" + screenName;
 
@@ -95,7 +96,7 @@ public class TwitterService : ITwitterService
                 PropertyNameCaseInsensitive = true
             };
 
-            TwitterRootObject result = JsonSerializer.Deserialize<TwitterRootObject>(body, options)!;
+            TwitterUsersMediaRootObject result = JsonSerializer.Deserialize<TwitterUsersMediaRootObject>(body, options)!;
 
             return result.Timeline;
         }
