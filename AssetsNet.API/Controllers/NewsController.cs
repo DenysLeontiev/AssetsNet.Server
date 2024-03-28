@@ -73,4 +73,21 @@ public class NewsController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpGet("twitter/userMedia/{screenName}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TwitterPost>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<TwitterPost>>> GetUserMedia(string screenName)
+    {
+        try
+        {
+            var data = await _twitterService.GetUserMedia(screenName);
+
+            return Ok(data);
+        }
+        catch (HttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
