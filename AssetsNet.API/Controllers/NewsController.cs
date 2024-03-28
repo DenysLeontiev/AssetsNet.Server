@@ -65,7 +65,7 @@ public class NewsController : BaseApiController
     {
         try
         {
-            var data = await _twitterService.GetTwitterPosts(query);
+            var data = await _twitterService.GetTwitterPosts(query, searchType);
 
             return Ok(data);
         }
