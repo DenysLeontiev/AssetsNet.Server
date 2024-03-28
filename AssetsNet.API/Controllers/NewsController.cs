@@ -77,7 +77,7 @@ public class NewsController : BaseApiController
     [HttpGet("twitter/userMedia/{screenName}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TwitterPost>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<TwitterPost>>> GetUserMedia(string screenName)
+    public async Task<ActionResult<IEnumerable<TwitterPost>>> GetUserMedia(string screenName = "Stocktwits")
     {
         try
         {
