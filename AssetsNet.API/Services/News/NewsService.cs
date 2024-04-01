@@ -59,25 +59,34 @@ public class NewsService : INewsService
     public async Task<IEnumerable<Article>> GetNewsApiArticles(string query)
     {
         var newsApiClient = new NewsApiClient(_configuration["NewsApiKey"]);
-        var articlesResponse = await newsApiClient.GetEverythingAsync(new EverythingRequest
-        {
-            Q = query,
-            SortBy = SortBys.Popularity,
-            Language = Languages.EN,
-            From = DateTime.Now.AddMonths(-1) // get previous month
-        });
         List<Article> articles = new();
-        if (articlesResponse.Status == Statuses.Ok)
+
+        try
         {
-            Console.WriteLine(articlesResponse.TotalResults);
-            foreach (var article in articlesResponse.Articles)
+            var articlesResponse = await newsApiClient.GetEverythingAsync(new EverythingRequest
             {
-                if (article is not null)
+                Q = query,
+                SortBy = SortBys.Popularity,
+                Language = Languages.EN,
+                From = DateTime.Now.AddMonths(-1) // get previous month
+            });
+
+            if (articlesResponse.Status == Statuses.Ok)
+            {
+                Console.WriteLine(articlesResponse.TotalResults);
+                foreach (var article in articlesResponse.Articles)
                 {
-                    articles.Add(article);
+                    if (article is not null)
+                    {
+                        articles.Add(article);
+                    }
                 }
             }
+            return articles;
         }
-        return articles;
+        catch (HttpRequestException e)
+        {
+            throw new HttpRequestException($"Error while getting news for {query} from Yahoo NewsAPI", e);
+        }
     }
 }

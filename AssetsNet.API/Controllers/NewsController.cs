@@ -81,8 +81,15 @@ public class NewsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Article>> GetNewsApi(string query)
     {
-        var data = await _newsService.GetNewsApiArticles(query);
+        try
+        {
+            var data = await _newsService.GetNewsApiArticles(query);
 
-        return Ok(data);
+            return Ok(data);
+        }
+        catch (HttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }
