@@ -8,6 +8,7 @@ using AssetsNet.API.Models.News;
 using AssetsNet.API.Models.Reddit;
 using AssetsNet.API.Models.Twitter;
 using Microsoft.AspNetCore.Mvc;
+using NewsAPI.Models;
 
 namespace AssetsNet.API.Controllers;
 
@@ -72,5 +73,16 @@ public class NewsController : BaseApiController
         {
             return BadRequest(ex.Message);
         }
+    }
+
+
+    [HttpGet("newsApi/{query}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Article>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Article>> GetNewsApi(string query)
+    {
+        var data = await _newsService.GetNewsApiArticles(query);
+
+        return Ok(data);
     }
 }
