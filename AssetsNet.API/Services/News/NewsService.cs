@@ -69,6 +69,7 @@ public class NewsService : INewsService
                 Q = query,
                 SortBy = SortBys.Popularity,
                 Language = Languages.EN,
+                PageSize = 9,
                 From = DateTime.Now.AddMonths(-1) // get previous month
             });
 
