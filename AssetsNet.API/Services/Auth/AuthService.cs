@@ -2,11 +2,14 @@ using AssetsNet.API.DTOs;
 using AssetsNet.API.DTOs.Email;
 using AssetsNet.API.DTOs.User;
 using AssetsNet.API.Entities;
+using AssetsNet.API.Helpers;
 using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.Email;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetsNet.API.Services.Auth;
 
@@ -16,14 +19,16 @@ public class AuthService : IAuthService
     private readonly UserManager<User> _userManager;
     private readonly ITokenHandler _tokenHandler;
     private readonly IEmailService _emailService;
+    private readonly IConfiguration _configuration;
 
-    public AuthService(SignInManager<User> signInManager ,UserManager<User> userManager, ITokenHandler tokenHandler,
-        IEmailService emailService)
+    public AuthService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenHandler tokenHandler,
+        IEmailService emailService, IConfiguration configuration)
     {
         _userManager = userManager;
         _tokenHandler = tokenHandler;
         _emailService = emailService;
         _signInManager = signInManager;
+        _configuration = configuration;
     }
 
     public async Task<UserJwtDto> RegisterAsync(RegisterUserDto registerUserDto)
@@ -66,13 +71,58 @@ public class AuthService : IAuthService
         {
             throw new Exception("The password is incorrect");
         }
-        
+
         return new UserJwtDto
         {
             UserName = userFromDb.UserName,
             Email = userFromDb.Email,
             Token = _tokenHandler.CreateToken(userFromDb)
         };
+    }
+
+    public async Task<UserJwtDto> LoginWithGoogleAsync(string credential)
+    {
+        string clientId = _configuration.GetSection("GoogleClientId").Value;
+        var settings = new GoogleJsonWebSignature.ValidationSettings()
+        {
+            Audience = new List<string> { clientId }
+        };
+
+        var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email.Equals(payload.Email));
+
+        UserJwtDto userJwtDto = new UserJwtDto();
+
+        if (user == null)
+        {
+            var userToCreate = new User
+            {
+                UserName = payload.Name,
+                Email = payload.Email,
+                EmailConfirmed = payload.EmailVerified,
+                NormalizedEmail = payload.Email.ToUpper(),
+                NormalizedUserName = payload.Name.ToUpper(),
+            };
+
+            var result = await _userManager.CreateAsync(userToCreate);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception("Google Authentification failed! Errors: " + string.Join(" ", result.ToString()));
+            }
+
+            await _userManager.AddToRoleAsync(userToCreate, DbRolesConsts.MemberRole);
+
+            userJwtDto = GetUserJwtDto(userToCreate);
+
+            return userJwtDto;
+        }
+        else
+        {
+            userJwtDto = GetUserJwtDto(user);
+            return userJwtDto;
+        }
     }
 
     public async Task ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto)
@@ -100,11 +150,22 @@ public class AuthService : IAuthService
 
         var email = new DTOs.Email.EmailSendDto(user.Email, "Email Verification",
             $"Please enter the following code to verify your email: {verificationCode}");
-        
+
         user.VerificationCode = verificationCode;
 
         await _userManager.UpdateAsync(user);
 
         await _emailService.SendEmailAsync(email);
+    }
+
+    private UserJwtDto GetUserJwtDto(User user)
+    {
+        return new UserJwtDto
+        {
+            UserName = user.UserName,
+            Email = user.Email,
+            Id = user.Id,
+            Token = _tokenHandler.CreateToken(user)
+        };
     }
 }
