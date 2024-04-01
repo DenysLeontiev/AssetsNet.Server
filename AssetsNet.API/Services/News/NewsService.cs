@@ -56,7 +56,8 @@ public class NewsService : INewsService
         }
     }
 
-    public async Task<IEnumerable<Article>> GetNewsApiArticles(string query)
+    // API Docs https://newsapi.org/docs/client-libraries/csharp
+    public async Task<IEnumerable<Article>> GetNewsApiArticles(string query) 
     {
         var newsApiClient = new NewsApiClient(_configuration["NewsApiKey"]);
         List<Article> articles = new();
