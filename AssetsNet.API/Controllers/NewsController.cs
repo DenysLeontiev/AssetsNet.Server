@@ -7,6 +7,7 @@ using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.News;
 using AssetsNet.API.Models.Reddit;
 using AssetsNet.API.Models.Twitter;
+using AssetsNet.API.Models.Twitter.TwitterUsersMedia;
 using Microsoft.AspNetCore.Mvc;
 using NewsAPI.Models;
 
@@ -65,7 +66,24 @@ public class NewsController : BaseApiController
     {
         try
         {
-            var data = await _twitterService.GetTwitterPosts(query);
+            var data = await _twitterService.GetTwitterPosts(query, searchType);
+
+            return Ok(data);
+        }
+        catch (HttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("twitter/userMedia/{screenName}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TwitterUserMediaPost>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<TwitterUserMediaPost>>> GetUserMedia(string screenName = "Stocktwits")
+    {
+        try
+        {
+            var data = await _twitterService.GetUserMedia(screenName);
 
             return Ok(data);
         }

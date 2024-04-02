@@ -50,6 +50,7 @@ public class AuthService : IAuthService
 
         return new UserJwtDto
         {
+            Id = userToCreate.Id,
             UserName = userToCreate.UserName,
             Email = userToCreate.Email,
             Token = _tokenHandler.CreateToken(userToCreate)
@@ -74,6 +75,7 @@ public class AuthService : IAuthService
 
         return new UserJwtDto
         {
+            Id = userFromDb.Id,
             UserName = userFromDb.UserName,
             Email = userFromDb.Email,
             Token = _tokenHandler.CreateToken(userFromDb)
