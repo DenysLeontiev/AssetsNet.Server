@@ -1,5 +1,8 @@
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Models.News;
+using NewsAPI;
+using NewsAPI.Constants;
+using NewsAPI.Models;
 using Newtonsoft.Json;
 
 namespace AssetsNet.API.Services.News;
@@ -50,6 +53,42 @@ public class NewsService : INewsService
         catch (HttpRequestException e)
         {
             throw new HttpRequestException($"Error while getting news for {companyName} from Yahoo Finance API", e);
+        }
+    }
+
+    // API Docs https://newsapi.org/docs/client-libraries/csharp
+    public async Task<IEnumerable<Article>> GetNewsApiArticles(string query) 
+    {
+        var newsApiClient = new NewsApiClient(_configuration["NewsApiKey"]);
+        List<Article> articles = new();
+
+        try
+        {
+            var articlesResponse = await newsApiClient.GetEverythingAsync(new EverythingRequest
+            {
+                Q = query,
+                SortBy = SortBys.Popularity,
+                Language = Languages.EN,
+                PageSize = 9,
+                From = DateTime.Now.AddDays(-5) // get previous month
+            });
+
+            if (articlesResponse.Status == Statuses.Ok)
+            {
+                Console.WriteLine(articlesResponse.TotalResults);
+                foreach (var article in articlesResponse.Articles)
+                {
+                    if (article is not null)
+                    {
+                        articles.Add(article);
+                    }
+                }
+            }
+            return articles;
+        }
+        catch (HttpRequestException e)
+        {
+            throw new HttpRequestException($"Error while getting news for {query} from Yahoo NewsAPI", e);
         }
     }
 }
