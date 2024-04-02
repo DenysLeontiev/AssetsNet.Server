@@ -70,7 +70,7 @@ public class NewsService : INewsService
                 SortBy = SortBys.Popularity,
                 Language = Languages.EN,
                 PageSize = 9,
-                From = DateTime.Now.AddMonths(-1) // get previous month
+                From = DateTime.Now.AddDays(-5) // get previous month
             });
 
             if (articlesResponse.Status == Statuses.Ok)
