@@ -15,6 +15,44 @@ public class UsersController : BaseApiController
         _userRepository = userRepository;
     }
 
+    [HttpGet("followings")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> GetFollowings()
+    {
+        try
+        {
+            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
+            var userFollowings = await _userRepository.GetUserFollowings(currentUserId);
+
+            return Ok(userFollowings);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("followers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> GetFollowers()
+    {
+        try
+        {
+            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
+            var userFollowers = await _userRepository.GetUserFollowers(currentUserId);
+
+            return Ok(userFollowers);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpPost("upload-profile-photo")]
     public async Task<ActionResult<PhotoDto>> UploadProfilePhoto([FromForm] UploadProfilePhotoDto uploadProfilePhotoDto)
     {
@@ -57,25 +95,5 @@ public class UsersController : BaseApiController
         {
             return BadRequest(ex.Message);
         }
-    }
-
-    [HttpGet("followings")]
-    public async Task<ActionResult> GetFollowings()
-    {
-        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-
-        var userFollowings = await _userRepository.GetUserFollowings(currentUserId);
-
-        return Ok(userFollowings);
-    }
-
-    [HttpGet("followers")]
-    public async Task<ActionResult> GetFollowers()
-    {
-        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-
-        var userFollowers = await _userRepository.GetUserFollowers(currentUserId);
-
-        return Ok(userFollowers);
     }
 }
