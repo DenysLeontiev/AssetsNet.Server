@@ -102,12 +102,7 @@ public class UserRepository : IUserRepository
                                        .Where(uf => uf.UserId == userId)
                                        .ToListAsync();
 
-        var userFollowingsDto = userFollowings.Select(uf => new UserFollowingDto
-        {
-            UserName = uf.Following.UserName,
-            Id = uf.Following.Id,
-            PhotoUrl = uf.Following.ProfilePhoto?.PhotoUrl!
-        }).ToList();
+        var userFollowingsDto = _mapper.Map<List<UserFollowingDto>>(userFollowings);
 
         return userFollowingsDto;
     }
