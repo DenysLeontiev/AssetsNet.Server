@@ -1,7 +1,6 @@
 ﻿using AssetsNet.API.Data;
 using AssetsNet.API.DTOs.DatabaseDTO;
 using AssetsNet.API.DTOs.DatabaseDTOs;
-using AssetsNet.API.DTOs.Photo;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Repositories;
@@ -60,8 +59,6 @@ public class UserRepository : IUserRepository
                                                .FirstOrDefaultAsync(x => x.Id.Equals(userIdToFollow))
                                                ?? throw new Exception($"User ({userIdToFollow}) is not found");
 
-        var userFollowings = await _context.UserFollowings.ToListAsync();
-
         if (await _context.UserFollowings.AnyAsync(x => x.FollowingId.Equals(userIdToFollow)
             && x.UserId.Equals(currentUserId)))
         {
@@ -109,9 +106,26 @@ public class UserRepository : IUserRepository
         {
             UserName = uf.Following.UserName,
             Id = uf.Following.Id,
-            PhotoUrl = uf.Following.ProfilePhoto?.PhotoUrl
+            PhotoUrl = uf.Following.ProfilePhoto?.PhotoUrl!
         }).ToList();
 
         return userFollowingsDto;
+    }
+
+    public async Task<List<UserFollowerDto>> GetUserFollowers(string userId)
+    {
+        var userFollowers = await _context.UserFollowers.Include(x => x.Follower).ThenInclude(p => p.ProfilePhoto)
+                                                        .Include(x => x.User).Where(x => x.UserId.Equals(userId))
+                                                        .ToListAsync();
+
+
+        var userFollowersDto = userFollowers.Select(uf => new UserFollowerDto
+        {
+            UserName = uf.Follower.UserName,
+            Id = uf.Follower.Id,
+            PhotoUrl = uf.Follower.ProfilePhoto?.PhotoUrl!
+        }).ToList();
+
+        return userFollowersDto;
     }
 }
