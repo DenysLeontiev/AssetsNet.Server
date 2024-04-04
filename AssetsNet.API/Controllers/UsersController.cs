@@ -54,6 +54,8 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("upload-profile-photo")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PhotoDto>> UploadProfilePhoto([FromForm] UploadProfilePhotoDto uploadProfilePhotoDto)
     {
         try
