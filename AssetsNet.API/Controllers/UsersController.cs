@@ -9,10 +9,12 @@ namespace AssetsNet.API.Controllers;
 public class UsersController : BaseApiController
 {
     private readonly IUserRepository _userRepository;
+    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(IUserRepository userRepository)
+    public UsersController(IUserRepository userRepository, ILogger<UsersController> logger)
     {
         _userRepository = userRepository;
+        _logger = logger;
     }
 
     [HttpGet("followings")]
@@ -26,10 +28,13 @@ public class UsersController : BaseApiController
 
             var userFollowings = await _userRepository.GetUserFollowings(currentUserId);
 
+            _logger.LogInformation("Successfully retrieved followings for User ({userId})", currentUserId);
+
             return Ok(userFollowings);
         }
         catch (Exception ex)
         {
+            _logger.LogError("An error happened during retrieving followings for user", ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -45,10 +50,13 @@ public class UsersController : BaseApiController
 
             var userFollowers = await _userRepository.GetUserFollowers(currentUserId);
 
+            _logger.LogInformation("Successfully retrieved followers for User ({userId})", currentUserId);
+
             return Ok(userFollowers);
         }
         catch (Exception ex)
         {
+            _logger.LogError("An error happened during retrieving followers for user", ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -60,9 +68,9 @@ public class UsersController : BaseApiController
     {
         try
         {
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 
-            var uploadedPhoto = await _userRepository.UploadProfilePhotoAsync(uploadProfilePhotoDto.ProfilePhoto, userId);
+            var uploadedPhoto = await _userRepository.UploadProfilePhotoAsync(uploadProfilePhotoDto.ProfilePhoto, currentUserId);
 
             var photoDto = new PhotoDto
             {
@@ -72,10 +80,13 @@ public class UsersController : BaseApiController
                 UserId = uploadedPhoto.UserId!
             };
 
+            _logger.LogInformation("Successfully uploaded photofor User ({userId})", currentUserId);
+
             return Ok(photoDto);
         }
         catch (Exception ex)
         {
+            _logger.LogError("An error happened during photo upload for user", ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -91,10 +102,13 @@ public class UsersController : BaseApiController
 
             var followedUser = await _userRepository.FollowUser(currentUserId, userIdToFollow);
 
+            _logger.LogInformation("User({currentUserId}) successfully followed user({followedUserId})", currentUserId, userIdToFollow);
+
             return Ok(followedUser);
         }
         catch (Exception ex)
         {
+            _logger.LogError("Can`t follow this user", ex.Message);
             return BadRequest(ex.Message);
         }
     }
