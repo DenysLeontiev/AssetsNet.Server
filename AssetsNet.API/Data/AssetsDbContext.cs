@@ -43,4 +43,6 @@ public class AssetsDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Photo> Photos { get; set; }
+    public DbSet<UserFollowing> UserFollowings { get; set; }
+    public DbSet<UserFollowers> UserFollowers { get; set; }
 }
