@@ -59,4 +59,14 @@ public class UsersController : BaseApiController
 
         return Ok(userFollowings);
     }
+
+    [HttpGet("followers")]
+    public async Task<ActionResult> GetFollowers()
+    {
+        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
+        var userFollowers = await _userRepository.GetUserFollowers(currentUserId);
+
+        return Ok(userFollowers);
+    }
 }
