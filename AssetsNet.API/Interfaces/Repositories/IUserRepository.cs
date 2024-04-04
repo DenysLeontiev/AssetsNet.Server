@@ -1,7 +1,5 @@
 ﻿using AssetsNet.API.DTOs.DatabaseDTO;
 using AssetsNet.API.DTOs.DatabaseDTOs;
-using AssetsNet.API.DTOs.Photo;
-using AssetsNet.API.Entities;
 
 namespace AssetsNet.API.Interfaces.Repositories;
 
