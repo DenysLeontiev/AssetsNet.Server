@@ -119,12 +119,7 @@ public class UserRepository : IUserRepository
                                                         .ToListAsync();
 
 
-        var userFollowersDto = userFollowers.Select(uf => new UserFollowerDto
-        {
-            UserName = uf.Follower.UserName,
-            Id = uf.Follower.Id,
-            PhotoUrl = uf.Follower.ProfilePhoto?.PhotoUrl!
-        }).ToList();
+        var userFollowersDto = _mapper.Map<List<UserFollowerDto>>(userFollowers);
 
         return userFollowersDto;
     }
