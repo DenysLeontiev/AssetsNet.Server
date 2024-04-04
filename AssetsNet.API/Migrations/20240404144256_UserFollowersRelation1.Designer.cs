@@ -4,6 +4,7 @@ using AssetsNet.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetsNet.API.Migrations
 {
     [DbContext(typeof(AssetsDbContext))]
-    partial class AssetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240404144256_UserFollowersRelation1")]
+    partial class UserFollowersRelation1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,7 +118,7 @@ namespace AssetsNet.API.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("AssetsNet.API.Entities.UserFollower", b =>
+            modelBuilder.Entity("AssetsNet.API.Entities.UserFollowers", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -288,7 +290,7 @@ namespace AssetsNet.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AssetsNet.API.Entities.UserFollower", b =>
+            modelBuilder.Entity("AssetsNet.API.Entities.UserFollowers", b =>
                 {
                     b.HasOne("AssetsNet.API.Entities.User", "Follower")
                         .WithMany("Followers")

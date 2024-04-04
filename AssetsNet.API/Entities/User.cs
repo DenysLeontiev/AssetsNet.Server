@@ -7,5 +7,5 @@ public class User : IdentityUser
     public int VerificationCode { get; set; }
     public Photo? ProfilePhoto { get; set; }
     public List<UserFollowing> Followings { get; set; } = new();
-    public List<UserFollowers> Followers { get; set; } = new();
+    public List<UserFollower> Followers { get; set; } = new();
 }

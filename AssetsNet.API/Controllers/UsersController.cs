@@ -39,4 +39,24 @@ public class UsersController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPost("follow-user/{userIdToFollow}")]
+    public async Task<ActionResult> FollowUser(string userIdToFollow)
+    {
+        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
+        var followedUser = await _userRepository.FollowUser(currentUserId, userIdToFollow);
+
+        return Ok(followedUser);
+    }
+
+    [HttpGet("followings")]
+    public async Task<ActionResult> GetFollowings()
+    {
+        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
+        var userFollowings = await _userRepository.GetUserFollowings(currentUserId);
+
+        return Ok(userFollowings);
+    }
 }

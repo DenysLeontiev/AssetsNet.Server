@@ -16,7 +16,7 @@ public class AssetsDbContext : IdentityDbContext<User>
         base.OnModelCreating(builder);
 
         builder.Entity<UserFollowing>().HasKey(uf => new { uf.UserId, uf.FollowingId });
-        builder.Entity<UserFollowers>().HasKey(uf => new { uf.UserId, uf.FollowerId });
+        builder.Entity<UserFollower>().HasKey(uf => new { uf.UserId, uf.FollowerId });
 
         builder.Entity<UserFollowing>()
             .HasOne(uf => uf.Following)
@@ -24,7 +24,7 @@ public class AssetsDbContext : IdentityDbContext<User>
             .HasForeignKey(uf => uf.FollowingId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<UserFollowers>()
+        builder.Entity<UserFollower>()
             .HasOne(uf => uf.Follower)
             .WithMany(u => u.Followers)
             .HasForeignKey(uf => uf.FollowerId)
@@ -44,5 +44,5 @@ public class AssetsDbContext : IdentityDbContext<User>
 
     public DbSet<Photo> Photos { get; set; }
     public DbSet<UserFollowing> UserFollowings { get; set; }
-    public DbSet<UserFollowers> UserFollowers { get; set; }
+    public DbSet<UserFollower> UserFollowers { get; set; }
 }
