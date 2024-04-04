@@ -41,13 +41,22 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("follow-user/{userIdToFollow}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> FollowUser(string userIdToFollow)
     {
-        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        try
+        {
+            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 
-        var followedUser = await _userRepository.FollowUser(currentUserId, userIdToFollow);
+            var followedUser = await _userRepository.FollowUser(currentUserId, userIdToFollow);
 
-        return Ok(followedUser);
+            return Ok(followedUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("followings")]
