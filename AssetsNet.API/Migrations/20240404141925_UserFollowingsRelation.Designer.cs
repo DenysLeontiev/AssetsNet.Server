@@ -4,6 +4,7 @@ using AssetsNet.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetsNet.API.Migrations
 {
     [DbContext(typeof(AssetsDbContext))]
-    partial class AssetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240404141925_UserFollowingsRelation")]
+    partial class UserFollowingsRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,21 +116,6 @@ namespace AssetsNet.API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("AssetsNet.API.Entities.UserFollowers", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FollowerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "FollowerId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("UserFollowers");
                 });
 
             modelBuilder.Entity("AssetsNet.API.Entities.UserFollowing", b =>
@@ -288,25 +275,6 @@ namespace AssetsNet.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AssetsNet.API.Entities.UserFollowers", b =>
-                {
-                    b.HasOne("AssetsNet.API.Entities.User", "Follower")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("AssetsNet.API.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Follower");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AssetsNet.API.Entities.UserFollowing", b =>
                 {
                     b.HasOne("AssetsNet.API.Entities.User", "Following")
@@ -379,8 +347,6 @@ namespace AssetsNet.API.Migrations
 
             modelBuilder.Entity("AssetsNet.API.Entities.User", b =>
                 {
-                    b.Navigation("Followers");
-
                     b.Navigation("Followings");
 
                     b.Navigation("ProfilePhoto");
