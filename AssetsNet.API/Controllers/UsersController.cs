@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using AssetsNet.API.Controllers.Common;
+using AssetsNet.API.DTOs.DatabaseDTO;
+using AssetsNet.API.DTOs.DatabaseDTOs;
 using AssetsNet.API.DTOs.Photo;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +20,9 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followings")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserFollowingDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> GetFollowings()
+    public async Task<ActionResult<List<UserFollowingDto>>> GetFollowings()
     {
         try
         {
@@ -40,9 +42,9 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followers")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserFollowerDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> GetFollowers()
+    public async Task<ActionResult<List<UserFollowerDto>>> GetFollowers()
     {
         try
         {
@@ -62,7 +64,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("upload-profile-photo")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PhotoDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PhotoDto>> UploadProfilePhoto([FromForm] UploadProfilePhotoDto uploadProfilePhotoDto)
     {
@@ -92,9 +94,9 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("follow-user/{userIdToFollow}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> FollowUser(string userIdToFollow)
+    public async Task<ActionResult<UserDto>> FollowUser(string userIdToFollow)
     {
         try
         {
