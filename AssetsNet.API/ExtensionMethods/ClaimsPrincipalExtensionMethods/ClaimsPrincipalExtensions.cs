@@ -7,12 +7,18 @@ public static class ClaimsPrincipalExtensions
 {
     public static string GetCurrentUserId(this ClaimsPrincipal claimsPrincipal)
     {
-        var claimId = claimsPrincipal.FindFirst(JwtRegisteredClaimNames.NameId);
-        if(claimId != null)
+        return GetClaimValueByClaimName(claimsPrincipal, JwtRegisteredClaimNames.NameId);
+    }
+
+    private static string GetClaimValueByClaimName(ClaimsPrincipal claimsPrincipal, string claimName)
+    {
+        var claim = claimsPrincipal.FindFirst(claimName);
+
+        if(claim != null)
         {
-            return claimId.Value;
+            return claim.Value;
         }
 
-        throw new InvalidOperationException("NameId cannot be found");
+        throw new InvalidOperationException($"{claimName} cannot be found");
     }
 }
