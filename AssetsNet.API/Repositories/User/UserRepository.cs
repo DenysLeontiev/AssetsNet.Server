@@ -45,9 +45,9 @@ public class UserRepository : IUserRepository
 
         userToUpdateProfilePhoto!.ProfilePhoto = photo;
 
-        var photoDto = _mapper.Map<PhotoDto>(photo);
-
         await _context.SaveChangesAsync();
+        
+        var photoDto = _mapper.Map<PhotoDto>(photo);
 
         return photoDto;
     }
