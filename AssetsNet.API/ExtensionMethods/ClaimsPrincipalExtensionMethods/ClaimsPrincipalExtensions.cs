@@ -10,11 +10,21 @@ public static class ClaimsPrincipalExtensions
         return GetClaimValueByClaimName(claimsPrincipal, JwtRegisteredClaimNames.NameId);
     }
 
+    public static string GetCurrentUserName(this ClaimsPrincipal claimsPrincipal)
+    {
+        return GetClaimValueByClaimName(claimsPrincipal, JwtRegisteredClaimNames.GivenName);
+    }
+
+    public static string GetCurrentUserEmail(this ClaimsPrincipal claimsPrincipal)
+    {
+        return GetClaimValueByClaimName(claimsPrincipal, JwtRegisteredClaimNames.Email);
+    }
+
     private static string GetClaimValueByClaimName(ClaimsPrincipal claimsPrincipal, string claimName)
     {
         var claim = claimsPrincipal.FindFirst(claimName);
 
-        if(claim != null)
+        if (claim != null)
         {
             return claim.Value;
         }
