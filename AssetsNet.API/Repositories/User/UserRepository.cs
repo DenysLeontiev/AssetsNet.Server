@@ -1,6 +1,7 @@
 ﻿using AssetsNet.API.Data;
 using AssetsNet.API.DTOs.DatabaseDTO;
 using AssetsNet.API.DTOs.DatabaseDTOs;
+using AssetsNet.API.DTOs.Photo;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Repositories;
@@ -24,7 +25,7 @@ public class UserRepository : IUserRepository
         _mapper = mapper;
     }
 
-    public async Task<Photo> UploadProfilePhotoAsync(IFormFile file, string userId)
+    public async Task<PhotoDto> UploadProfilePhotoAsync(IFormFile file, string userId)
     {
         var userToUpdateProfilePhoto = await _context.Users.Include(x => x.ProfilePhoto)
             .FirstOrDefaultAsync(x => x.Id.Equals(userId)) ?? throw new Exception("User with is not found");
@@ -44,9 +45,11 @@ public class UserRepository : IUserRepository
 
         userToUpdateProfilePhoto!.ProfilePhoto = photo;
 
+        var photoDto = _mapper.Map<PhotoDto>(photo);
+
         await _context.SaveChangesAsync();
 
-        return photo;
+        return photoDto;
     }
 
     public async Task<UserDto> FollowUser(string currentUserId, string userIdToFollow)
