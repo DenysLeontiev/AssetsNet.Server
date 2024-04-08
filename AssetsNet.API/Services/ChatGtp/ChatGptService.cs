@@ -47,6 +47,8 @@ public class ChatGptService : IChatGptService
 
             user.GptRequestsLeft--;
 
+            await _dbContext.SaveChangesAsync();
+
             return new ChatGptResponseDto
             {
                 Response = response,
