@@ -45,6 +45,8 @@ public class ChatGptService : IChatGptService
 
             var response = await openai.Ask(question, conversationId);
 
+            user.GptRequestsLeft--;
+
             return new ChatGptResponseDto
             {
                 Response = response,
