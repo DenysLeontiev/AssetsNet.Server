@@ -51,12 +51,10 @@ public class UserRepository : IUserRepository
 
     public async Task<UserDto> FollowUser(string currentUserId, string userIdToFollow)
     {
-        var currentUser = await _context.Users.Include(x => x.Followings)
-                                              .FirstOrDefaultAsync(x => x.Id.Equals(currentUserId))
+        var currentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id.Equals(currentUserId))
                                               ?? throw new Exception($"User ({currentUserId}) is not found");
 
-        var userToFollow = await _context.Users.Include(x => x.Followers)
-                                               .FirstOrDefaultAsync(x => x.Id.Equals(userIdToFollow))
+        var userToFollow = await _context.Users.FirstOrDefaultAsync(x => x.Id.Equals(userIdToFollow))
                                                ?? throw new Exception($"User ({userIdToFollow}) is not found");
 
         if (await _context.UserFollowings.AnyAsync(x => x.FollowingId.Equals(userIdToFollow)
@@ -71,20 +69,7 @@ public class UserRepository : IUserRepository
             FollowingId = userIdToFollow
         };
 
-        if (await _context.UserFollowers.AnyAsync(x => x.FollowerId.Equals(userIdToFollow)
-            && x.UserId.Equals(currentUserId)))
-        {
-            throw new Exception("You are already following this user");
-        }
-
-        var userFollower = new UserFollower
-        {
-            UserId = userIdToFollow,
-            FollowerId = currentUserId
-        };
-
         _context.UserFollowings.Add(userFollowing);
-        _context.UserFollowers.Add(userFollower);
 
         await _context.SaveChangesAsync();
 
@@ -92,6 +77,7 @@ public class UserRepository : IUserRepository
 
         return mappedUser;
     }
+
 
     public async Task<List<UserFollowingDto>> GetUserFollowings(string userId)
     {
