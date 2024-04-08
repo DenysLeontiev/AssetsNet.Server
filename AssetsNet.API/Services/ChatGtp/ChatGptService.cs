@@ -28,7 +28,7 @@ public class ChatGptService : IChatGptService
 
         if (user.GptRequestsLeft <= 0)
         {
-            throw new Exception("No GPT requests left");
+            throw new GptRequestsLimitExceededException("Gpt requests limit exceeded");
         }
 
         if (string.IsNullOrEmpty(question))
