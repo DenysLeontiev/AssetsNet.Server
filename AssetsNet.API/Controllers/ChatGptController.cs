@@ -1,6 +1,7 @@
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.DTOs.ChatGpt;
 using AssetsNet.API.Interfaces.ChatGpt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
@@ -14,6 +15,7 @@ public class ChatGptController : BaseApiController
         _chatGptService = chatGptService;
     }
 
+    [Authorize]
     [HttpPost("query")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ChatGptResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
