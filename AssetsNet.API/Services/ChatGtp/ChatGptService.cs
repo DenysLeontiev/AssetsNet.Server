@@ -13,7 +13,7 @@ public class ChatGptService : IChatGptService
         _configuration = configuration;
     }
 
-    public async Task<ChatGptResponseDto> QueryChatGpt(string question, string? conversationId)
+    public async Task<ChatGptResponseDto> QueryChatGpt(string question, string userId, string? conversationId)
     {
         if (string.IsNullOrEmpty(question))
         {
