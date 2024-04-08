@@ -43,6 +43,8 @@ public class UsersController : BaseApiController
     }
 
     [HttpPut("update-user-requests-limit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> UpdateUserRequestsLimit([FromBody] UpdateUserRequestsLimitDto updateUserRequestsLimitDto)
     {
         try

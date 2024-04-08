@@ -28,6 +28,10 @@ public class ChatGptController : BaseApiController
 
             return Ok(response);
         }
+        catch (GptRequestsLimitExceededException ex)
+        {
+            return Forbid(ex.Message);
+        }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
