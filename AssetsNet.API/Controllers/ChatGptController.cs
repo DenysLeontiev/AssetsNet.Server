@@ -1,5 +1,6 @@
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.DTOs.ChatGpt;
+using AssetsNet.API.ExtensionMethods.ClaimsPrincipalExtensionMethods;
 using AssetsNet.API.Interfaces.ChatGpt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ public class ChatGptController : BaseApiController
     {
         try
         {
-            var response = await _chatGptService.QueryChatGpt(queryDto.Query, queryDto.ConversationId);
+            var response = await _chatGptService.QueryChatGpt(queryDto.Query, User.GetCurrentUserId(), queryDto.ConversationId);
 
             return Ok(response);
         }
