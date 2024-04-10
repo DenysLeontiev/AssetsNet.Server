@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.DTOs.Photo;
+using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +42,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followings/{userId}")]
-    public async Task<IActionResult> GetUserFollowings(string userId)
+    public async Task<ActionResult<List<User>>> GetUserFollowings(string userId)
     {
         try
         {
@@ -61,7 +62,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followers/{userId}")]
-    public async Task<IActionResult> GetUserFollowers(string userId)
+    public async Task<ActionResult<List<User>>> GetUserFollowers(string userId)
     {
         try
         {
