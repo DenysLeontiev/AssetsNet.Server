@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers.Common;
 
+[Authorize]
 public class MessagesController : BaseApiController
 {
     private readonly IMessageRepository _messageRepository;
@@ -16,7 +17,6 @@ public class MessagesController : BaseApiController
         _messageRepository = messageRepository;
     }
 
-    [Authorize]
     [HttpPost("send-message")]
     public async Task<Message> SendMessage(SendMessageDto sendMessageDto)
     {
