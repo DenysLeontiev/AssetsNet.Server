@@ -14,7 +14,7 @@ public class MessageRepository : IMessageRepository
     }
 
 
-    public async Task<Entities.Message> SendMessage(string currentUserId, string recipientId, string content)
+    public async Task<Entities.Message> SendMessageAsync(string currentUserId, string recipientId, string content)
     {
         var message = new Entities.Message
         {
