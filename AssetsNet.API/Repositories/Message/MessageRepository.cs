@@ -31,6 +31,12 @@ public class MessageRepository : IMessageRepository
             throw new Exception("You cannot send message to yourself");
         }
 
+        var currentUser = await _context.Users.FindAsync(currentUserId) 
+            ?? throw new Exception("User is not found");
+        
+        var recipientUser = await _context.Users.FindAsync(recipientId) 
+            ?? throw new Exception("User is not found");
+
         var message = new Entities.Message
         {
             SenderId = currentUserId,

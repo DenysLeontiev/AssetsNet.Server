@@ -28,11 +28,20 @@ public class MessagesController : BaseApiController
     }
 
     [HttpPost("send-message")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Message>> SendMessage(SendMessageDto sendMessageDto)
     {
-        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        var sentMessage = await _messageRepository.SendMessageAsync(currentUserId, sendMessageDto.RecipientId, sendMessageDto.Content);
+        try
+        {
+            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            var sentMessage = await _messageRepository.SendMessageAsync(currentUserId, sendMessageDto.RecipientId, sendMessageDto.Content);
 
-        return Ok(sentMessage);
+            return Ok(sentMessage);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }
