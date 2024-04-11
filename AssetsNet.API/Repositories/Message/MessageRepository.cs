@@ -16,6 +16,21 @@ public class MessageRepository : IMessageRepository
 
     public async Task<Entities.Message> SendMessageAsync(string currentUserId, string recipientId, string content)
     {
+        if(string.IsNullOrEmpty(content))
+        {
+            throw new ArgumentNullException("You cannot send empty messages");
+        }
+
+        if(string.IsNullOrEmpty(currentUserId) || string.IsNullOrEmpty(recipientId))
+        {
+            throw new ArgumentNullException("Sender or Recipient is null");
+        }
+
+        if(currentUserId.Equals(recipientId))
+        {
+            throw new Exception("You cannot send message to yourself");
+        }
+
         var message = new Entities.Message
         {
             SenderId = currentUserId,
