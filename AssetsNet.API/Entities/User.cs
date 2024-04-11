@@ -7,6 +7,6 @@ public class User : IdentityUser
     public int VerificationCode { get; set; }
     public Photo? ProfilePhoto { get; set; }
     public virtual ICollection<UserFollow> Followers { get; set; }
-
     public virtual ICollection<UserFollow> Following { get; set; }
+    public List<Conversation> Conversations { get; set; }
 }
