@@ -18,6 +18,7 @@ public class MessagesController : BaseApiController
     }
 
     [HttpGet("{recipientId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<Message>>> GetMessages(string recipientId)
     {
         string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
