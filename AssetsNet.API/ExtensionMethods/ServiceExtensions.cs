@@ -14,6 +14,7 @@ using AssetsNet.API.Interfaces.Repositories;
 using AssetsNet.API.Interfaces.Stock;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.Email;
+using AssetsNet.API.Repositories.Message;
 using AssetsNet.API.Repositories.User;
 using AssetsNet.API.Seed;
 using AssetsNet.API.Seed.Models;
@@ -76,6 +77,7 @@ public static class ServiceExtensions
         services.AddScoped<ITwitterService, TwitterService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
 
         services.AddScoped<SeedRolesService>();
         services.AddScoped<SeedAdminAccountService>();
