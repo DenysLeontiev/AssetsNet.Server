@@ -8,5 +8,6 @@ public class User : IdentityUser
     public Photo? ProfilePhoto { get; set; }
     public virtual ICollection<UserFollow> Followers { get; set; }
     public virtual ICollection<UserFollow> Following { get; set; }
-    public List<Conversation> Conversations { get; set; }
+    public List<Message> MessagesSent { get; set; }
+    public List<Message> MessagesRecieved { get; set; }
 }

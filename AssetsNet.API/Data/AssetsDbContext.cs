@@ -8,12 +8,22 @@ public class AssetsDbContext : IdentityDbContext<User>
 {
     public AssetsDbContext(DbContextOptions<AssetsDbContext> options) : base(options)
     {
-        
+
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Message>()
+               .HasOne(x => x.Sender)
+               .WithMany(x => x.MessagesSent)
+               .OnDelete(DeleteBehavior.Restrict);
+               
+        builder.Entity<Message>()
+               .HasOne(x => x.Recipient)
+               .WithMany(x => x.MessagesRecieved)
+               .OnDelete(DeleteBehavior.Restrict); ;
 
         builder.Entity<UserFollow>()
             .HasKey(uf => new { uf.UserId, uf.FollowerId });

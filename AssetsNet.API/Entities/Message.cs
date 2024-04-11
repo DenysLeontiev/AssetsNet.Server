@@ -9,6 +9,4 @@ public class Message
     public User Sender { get; set; }
     public string RecipientId { get; set; }
     public User Recipient { get; set; }
-    public string ConversationId { get; set; }
-    public Conversation Conversation { get; set; }
 }
