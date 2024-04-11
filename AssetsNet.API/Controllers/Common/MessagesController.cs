@@ -17,12 +17,22 @@ public class MessagesController : BaseApiController
         _messageRepository = messageRepository;
     }
 
-    [HttpPost("send-message")]
-    public async Task<Message> SendMessage(SendMessageDto sendMessageDto)
+    [HttpGet("{recipientId}")]
+    public async Task<ActionResult<List<Message>>> GetMessages(string recipientId)
     {
-        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        var sentMessage = await _messageRepository.SendMessageAsync(userId, sendMessageDto.RecipientId, sendMessageDto.Content);
+        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 
-        return sentMessage;
+        var messages = await _messageRepository.GetMessages(currentUserId, recipientId);
+
+        return Ok(messages);
+    }
+
+    [HttpPost("send-message")]
+    public async Task<ActionResult<Message>> SendMessage(SendMessageDto sendMessageDto)
+    {
+        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var sentMessage = await _messageRepository.SendMessageAsync(currentUserId, sendMessageDto.RecipientId, sendMessageDto.Content);
+
+        return Ok(sentMessage);
     }
 }
