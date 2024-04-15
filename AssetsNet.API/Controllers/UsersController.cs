@@ -107,11 +107,11 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("{userId}")]
-    public async Task<ActionResult<UserDto>> GetDataFromDb(string userId)
+    public async Task<ActionResult<UserDto>> GetUserById(string userId)
     {
         try
         {
-            var user = await _userRepository.GetUser(userId);
+            var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
                 return NotFound($"User with ID {userId} not found.");
