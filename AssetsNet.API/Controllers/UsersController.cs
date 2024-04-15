@@ -4,16 +4,20 @@ using AssetsNet.API.DTOs.Photo;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using AssetsNet.API.DTOs.User;
+using AutoMapper;
 
 namespace AssetsNet.API.Controllers;
 
 public class UsersController : BaseApiController
 {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public UsersController(IUserRepository userRepository)
+    public UsersController(IUserRepository userRepository, IMapper mapper)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     [HttpPost("upload-profile-photo")]
@@ -95,6 +99,26 @@ public class UsersController : BaseApiController
             await _userRepository.FollowUserAsync(userId, userIdToFollow);
 
             return Ok($"User with ID {userId} is now following user with ID {userIdToFollow}.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<UserDto>> GetDataFromDb(string userId)
+    {
+        try
+        {
+            var user = await _userRepository.GetUser(userId);
+            if (user == null)
+            {
+                return NotFound($"User with ID {userId} not found.");
+            }
+
+            var userDto = _mapper.Map<UserDto>(user);
+            return Ok(userDto);
         }
         catch (Exception ex)
         {

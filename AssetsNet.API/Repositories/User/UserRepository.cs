@@ -4,6 +4,7 @@ using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace AssetsNet.API.Repositories.User;
 
@@ -86,5 +87,16 @@ public class UserRepository : IUserRepository
             .ToListAsync();
 
         return followers;
+    }
+    //TODO: null response
+    public async Task<Entities.User> GetUser(string userId)
+    {
+        var user = await _context.Users
+            .Include(x => x.ProfilePhoto)
+            .Include(x => x.Followers)
+            .Include(x => x.Following)
+                    .FirstOrDefaultAsync(x => x.Id.Equals(userId));
+
+        return user;
     }
 }
