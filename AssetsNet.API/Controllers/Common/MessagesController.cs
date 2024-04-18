@@ -2,30 +2,36 @@ using System.Security.Claims;
 using AssetsNet.API.DTOs.Message;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers.Common;
 
-[Authorize]
+// [Authorize]
 public class MessagesController : BaseApiController
 {
     private readonly IMessageRepository _messageRepository;
+    private readonly IMapper _mapper;
 
-    public MessagesController(IMessageRepository messageRepository)
+    public MessagesController(IMessageRepository messageRepository, IMapper mapper)
     {
         _messageRepository = messageRepository;
+        _mapper = mapper;
     }
 
     [HttpGet("{recipientId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<Message>>> GetMessages(string recipientId)
+    public async Task<ActionResult<List<MessageDto>>> GetMessages(string recipientId)
     {
-        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        // string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        string currentUserId = "bf8fd77a-91cf-43c6-bcf0-4e417cc59dd4";
 
         var messages = await _messageRepository.GetMessages(currentUserId, recipientId);
 
-        return Ok(messages);
+        var mappedMessages = _mapper.Map<List<MessageDto>>(messages);
+
+        return Ok(mappedMessages);
     }
 
     [HttpPost("send-message")]
@@ -35,7 +41,8 @@ public class MessagesController : BaseApiController
     {
         try
         {
-            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            // string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            string currentUserId = "bf8fd77a-91cf-43c6-bcf0-4e417cc59dd4";
             var sentMessage = await _messageRepository.SendMessageAsync(currentUserId, sendMessageDto.RecipientId, sendMessageDto.Content);
 
             return Ok(sentMessage);
