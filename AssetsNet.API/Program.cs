@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using AssetsNet.API.ExtensionMethods;
+using AssetsNet.API.Hubs;
 using AssetsNet.API.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<MessageHub>("/hubs/message");
 
 using var scope = app.Services.CreateScope();
 
