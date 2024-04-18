@@ -4,16 +4,18 @@ using AssetsNet.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AssetsNet.API.Migrations
+namespace AssetsNet.API.Data
 {
     [DbContext(typeof(AssetsDbContext))]
-    partial class AssetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411145201_AddedMessagingDbArchitecture")]
+    partial class AddedMessagingDbArchitecture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +27,6 @@ namespace AssetsNet.API.Migrations
             modelBuilder.Entity("AssetsNet.API.Entities.Message", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Content")
@@ -49,7 +50,7 @@ namespace AssetsNet.API.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("AssetsNet.API.Entities.Photo", b =>
@@ -96,9 +97,6 @@ namespace AssetsNet.API.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("GptRequestsLeft")
-                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");

@@ -71,4 +71,48 @@ public class UserRepository : IUserRepository
 
         return photo;
     }
+
+    public async Task FollowUserAsync(string followerId, string userId)
+    {
+        var followerUser = await _context.Users.FindAsync(followerId)
+            ?? throw new Exception("User is not found");
+
+        var userToFollow = await _context.Users.FindAsync(userId)
+            ?? throw new Exception("User is not found");
+
+        var existingFollow = await _context.UserFollows.FindAsync(userId, followerId);
+        if (existingFollow != null)
+        {
+            throw new Exception("You are already following this user");
+        }
+
+        var follow = new UserFollow
+        {
+            UserId = userId,
+            FollowerId = followerId,
+        };
+
+        await _context.UserFollows.AddAsync(follow);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<Entities.User>> GetUserFollowingsAsync(string userId)
+    {
+        var followings = await _context.UserFollows
+            .Where(uf => uf.FollowerId == userId)
+            .Select(uf => uf.User)
+            .ToListAsync();
+
+        return followings;
+    }
+
+    public async Task<List<Entities.User>> GetUserFollowersAsync(string userId)
+    {
+        var followers = await _context.UserFollows
+            .Where(uf => uf.UserId == userId)
+            .Select(uf => uf.Follower)
+            .ToListAsync();
+
+        return followers;
+    }
 }

@@ -3,6 +3,7 @@ using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.DTOs;
 using AssetsNet.API.DTOs.Photo;
 using AssetsNet.API.ExtensionMethods.ClaimsPrincipalExtensionMethods;
+using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,6 +58,62 @@ public class UsersController : BaseApiController
                 userId);
 
             return Ok();
+    }
+    
+    [HttpGet("followings/{userId}")]
+    public async Task<ActionResult<List<User>>> GetUserFollowings(string userId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId is required.");
+            }
+
+            var followings = await _userRepository.GetUserFollowingsAsync(userId);
+
+            return Ok(followings);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("followers/{userId}")]
+    public async Task<ActionResult<List<User>>> GetUserFollowers(string userId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId is required.");
+            }
+
+            var followers = await _userRepository.GetUserFollowersAsync(userId);
+
+            return Ok(followers);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("follow-user/{userIdToFollow}")]
+    public async Task<IActionResult> FollowUser(string userIdToFollow)
+    {
+        try
+        {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userIdToFollow))
+            {
+                return BadRequest("FollowerId and UserId are required.");
+            }
+
+            await _userRepository.FollowUserAsync(userId, userIdToFollow);
+
+            return Ok($"User with ID {userId} is now following user with ID {userIdToFollow}.");
         }
         catch (Exception ex)
         {
