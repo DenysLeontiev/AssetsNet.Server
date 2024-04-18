@@ -59,6 +59,27 @@ public class PaymentService : IPaymentService
         };
     }
 
+    public async Task<PaymentStateResponseDto> GetPaymentState(string orderId)
+    {
+        string publicKey = _config["LiqPayApi:PublicKey"];
+        string privateKey = _config["LiqPayApi:PrivateKey"];
 
-    
+        LiqPayClient client = new LiqPayClient(publicKey, privateKey);
+
+        var paymentParams = new LiqPayRequest
+        {
+            Version = 3,
+            Action = LiqPay.SDK.Dto.Enums.LiqPayRequestAction.Status,
+            OrderId = orderId
+        };
+
+        var response = await client.RequestAsync("request", paymentParams);
+
+        _logger.LogInformation("Payment state for order #{orderId} successfully received", orderId);
+
+        return new PaymentStateResponseDto
+        {
+            PaymentState = (int)response.Status
+        };
+    }
 }
