@@ -1,6 +1,7 @@
 ﻿using AssetsNet.API.Data;
 using AssetsNet.API.DTOs.Photo;
 using AssetsNet.API.Entities;
+using AssetsNet.API.Helpers;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,33 @@ public class UserRepository : IUserRepository
     {
         _context = context;
         _photoService = photoService;
+    }
+
+    public async Task UpdateUserRequestsLimitAsync(TariffPlansEnum tariff, int paymentState, string userId)
+    {
+        var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Id.Equals(userId))
+            ?? throw new Exception("User is not found");
+
+        if (paymentState is not TariffPlanConsts.SuccessPaymentState)
+        {
+            throw new Exception("Payment state is not success");
+        }
+
+        if (userToUpdate.GptRequestsLeft > 0)
+        {
+            throw new Exception("User has enought Gpt requests");
+        }
+        else
+        {
+            userToUpdate.GptRequestsLeft = tariff switch
+            {
+                TariffPlansEnum.Basic => TariffPlanConsts.BasicGptRequests,
+                TariffPlansEnum.Premium => TariffPlanConsts.PremiumGptRequests,
+                _ => throw new Exception("Tariff plan is not found")
+            };
+
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task<Photo> UploadProfilePhotoAsync(IFormFile file, string userId)
