@@ -7,6 +7,7 @@ using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.Email;
 using AssetsNet.API.Services;
+using AssetsNet.API.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -44,13 +45,13 @@ public class AccountController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
-    
+
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserJwtDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<UserJwtDto>> Login([FromBody] LoginUserDto loginUserDto) 
+    public async Task<ActionResult<UserJwtDto>> Login([FromBody] LoginUserDto loginUserDto)
     {
-        try 
+        try
         {
             var result = await _authService.LoginAsync(loginUserDto);
             _logger.LogInformation($"Login to account was successful");
@@ -65,22 +66,22 @@ public class AccountController : BaseApiController
     }
 
     [HttpPost("google-account")]
-	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserJwtDto))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserJwtDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<UserJwtDto>> GoogleAccount([FromBody] string credential)
+    public async Task<ActionResult<UserJwtDto>> GoogleAccount([FromBody] string credential)
     {
         try
         {
-			var userJwt = await _authService.LoginWithGoogleAsync(credential);
+            var userJwt = await _authService.LoginWithGoogleAsync(credential);
             _logger.LogInformation("User {UserName} logged in successfully.", userJwt.UserName);
 
-			return Created("", userJwt);
-		}
+            return Created("", userJwt);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message, "User login failed");
-			return BadRequest(ex.Message);
-		}
+            return BadRequest(ex.Message);
+        }
     }
 
     [Authorize]
@@ -102,4 +103,25 @@ public class AccountController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPost("send-password-restore-email")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> SendResetPasswordEmail([FromBody] string email)
+    {
+        try
+        {
+            await _authService.SendResetPasswordEmailAsync(email);
+            _logger.LogInformation("Password restore email sent to {Email}.", email);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message, "User with email {Email} has recieved emails recently", email);
+            return BadRequest(ex.Message);
+        }
+    }
+
 }

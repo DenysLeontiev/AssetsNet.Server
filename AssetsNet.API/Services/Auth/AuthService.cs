@@ -6,10 +6,16 @@ using AssetsNet.API.Helpers;
 using AssetsNet.API.Interfaces;
 using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.Email;
+using CloudinaryDotNet;
 using Google.Apis.Auth;
+using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.Web;
+using User = AssetsNet.API.Entities.User;
 
 namespace AssetsNet.API.Services.Auth;
 
@@ -43,7 +49,7 @@ public class AuthService : IAuthService
 
         if (!result.Succeeded)
         {
-            throw new Exception("User creation failed! Errors: " + string.Join(" ", result.Errors));
+            throw new Exception("User creation failed! Errors: " + string.Join(" ", result.Errors));      
         }
 
         await SendVerificationEmail(userToCreate);
@@ -168,4 +174,48 @@ public class AuthService : IAuthService
             Token = _tokenHandler.CreateToken(user)
         };
     }
+
+
+    public async Task SendResetPasswordEmailAsync(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user != null)
+        {
+            await SendResetPasswordEmailAsync(user);
+        }
+
+        else
+        {
+            throw new Exception("tly! Please wait for a while!");
+        }
+    }
+
+    private async Task<bool> SendResetPasswordEmailAsync(User user)
+    {
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+        var uriBuilder = new UriBuilder(_configuration["JWT:ClientUrl"]);
+        uriBuilder.Path = _configuration["EmailSettings:ResetPasswordPath"];
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["token"] = token;
+        query["userid"] = user.Id;
+        uriBuilder.Query = query.ToString();
+        var url = uriBuilder.ToString();
+
+        var body = $"Please reset your password by <a href='{url}'>clicking here</a>.";
+
+        var emailSendDto = new EmailSendDto(user.Email, "Reset your password", body);
+
+        if (await _emailService.SendEmailAsync(emailSendDto))
+        {
+            await _userManager.UpdateAsync(user);
+            return true;
+        }
+
+        return false;
+    }
+
+
 }

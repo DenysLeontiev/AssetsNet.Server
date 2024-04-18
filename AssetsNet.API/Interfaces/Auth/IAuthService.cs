@@ -10,4 +10,5 @@ public interface IAuthService
     Task<UserJwtDto> RegisterAsync(RegisterUserDto registerUserDto);
     Task<UserJwtDto> LoginWithGoogleAsync(string credentials);
     Task ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
+    Task SendResetPasswordEmailAsync(string email);
 }
