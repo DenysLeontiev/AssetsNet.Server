@@ -80,10 +80,10 @@ public class MessageHub : Hub
 
         // if (await _messageRepository.SaveAllAsync())
         // {
-            var groupName = GetGroupName(currentUserId, sendMessageDto.RecipientId);
+        var groupName = $"thread-{currentUserId}-{sendMessageDto.RecipientId}";
 
             // sends to message to thise who are listening to NewMessage
-            await Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<Message>(message));
+            await Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
         // }
     }
 
