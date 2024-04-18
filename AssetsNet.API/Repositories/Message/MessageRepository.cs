@@ -62,10 +62,20 @@ public class MessageRepository : IMessageRepository
 
     public async Task<List<Entities.Message>> GetMessages(string senderId, string recipientId)
     {
-        var messages = await _context.Messages.Include(x => x.Sender).Include(x => x.Recipient).Where(x => x.SenderId.Equals(senderId) && x.RecipientId.Equals(recipientId)
-            || (x.SenderId.Equals(recipientId) && x.RecipientId.Equals(senderId)))
-                                              .OrderBy(x => x.DateSent)
-                                              .ToListAsync();
+        // var messages = await _context.Messages.Include(x => x.Sender).Include(x => x.Recipient)
+        // .Where(x => x.SenderId.Equals(senderId) && x.RecipientId.Equals(recipientId)
+        //     || (x.SenderId.Equals(recipientId) && x.RecipientId.Equals(senderId)))
+        //                                       .OrderBy(x => x.DateSent)
+        //                                       .ToListAsync();
+
+        var messages = await _context.Messages
+                .Include(u => u.Sender).ThenInclude(p => p.ProfilePhoto)
+                .Include(u => u.Recipient).ThenInclude(p => p.ProfilePhoto)
+                .Where(m => m.RecipientId == recipientId && m.SenderId == senderId
+                    || m.RecipientId == senderId && m.SenderId == recipientId
+                )
+                .OrderByDescending(m => m.DateSent)
+                .ToListAsync();
 
         return messages;
     }

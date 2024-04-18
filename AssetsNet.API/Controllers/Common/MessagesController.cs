@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AssetsNet.API.DTOs.Message;
 using AssetsNet.API.Entities;
+using AssetsNet.API.ExtensionMethods.ClaimsPrincipalExtensionMethods;
 using AssetsNet.API.Interfaces.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers.Common;
 
-// [Authorize]
+[Authorize]
 public class MessagesController : BaseApiController
 {
     private readonly IMessageRepository _messageRepository;
@@ -24,8 +25,7 @@ public class MessagesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<MessageDto>>> GetMessages(string recipientId)
     {
-        // string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        string currentUserId = "bf8fd77a-91cf-43c6-bcf0-4e417cc59dd4";
+        string currentUserId = User.GetCurrentUserId();;
 
         var messages = await _messageRepository.GetMessages(currentUserId, recipientId);
 
@@ -42,7 +42,7 @@ public class MessagesController : BaseApiController
         try
         {
             // string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-            string currentUserId = "bf8fd77a-91cf-43c6-bcf0-4e417cc59dd4";
+            string currentUserId = User.GetCurrentUserId();
             var sentMessage = await _messageRepository.SendMessageAsync(currentUserId, sendMessageDto.RecipientId, sendMessageDto.Content);
 
             return Ok(sentMessage);

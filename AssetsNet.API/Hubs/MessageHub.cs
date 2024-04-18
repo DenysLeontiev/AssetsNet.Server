@@ -29,12 +29,13 @@ public class MessageHub : Hub
         var httpContext = Context.GetHttpContext(); // here we get HttpContext
         // var currentUsername = Context.User.GetUsername();
         var otherUserId = httpContext.Request.Query["user"];
-        var groupName = GetGroupName(currentUserId, otherUserId);
+        var groupName = $"thread-{currentUserId}-{otherUserId}";
 
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName); // here we add new groupm for DMs(Direct Messages)
 
-        var messages = await _messageRepository.GetMessages(currentUserId, otherUserId);
-        await Clients.Group(groupName).SendAsync("RecieveMessageThread", messages);
+        var messages = await _messageRepository.GetMessages(currentUserId, otherUserId.ToString());
+        var mappedMessages = _mapper.Map<List<MessageDto>>(messages);
+        await Clients.Group(groupName).SendAsync("RecieveMessageThread", mappedMessages);
     }
 
     public override Task OnDisconnectedAsync(Exception exception)

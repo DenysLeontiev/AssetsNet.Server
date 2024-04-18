@@ -21,6 +21,8 @@ builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureAuthentification(builder.Configuration);
 builder.Services.ConfigureAutoMapper();
 
+builder.Services.AddSignalR();
+
 builder.Services.AddCors();
 
 builder.Services.AddHttpClient();
