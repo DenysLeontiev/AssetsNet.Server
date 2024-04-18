@@ -38,7 +38,7 @@ public class PaymentController : BaseApiController
         try
         {
             var response = await _paymentService.GetPaymentState(orderId);
-
+            
             return Ok(response);
         }
         catch (Exception ex)
