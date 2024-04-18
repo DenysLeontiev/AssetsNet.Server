@@ -4,6 +4,7 @@ using AssetsNet.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetsNet.API.Migrations
 {
     [DbContext(typeof(AssetsDbContext))]
-    partial class AssetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240408110542_AddRequestsToUser")]
+    partial class AddRequestsToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,36 +23,6 @@ namespace AssetsNet.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("AssetsNet.API.Entities.Message", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateSent")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RecipientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipientId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Messages");
-                });
 
             modelBuilder.Entity("AssetsNet.API.Entities.Photo", b =>
                 {
@@ -147,21 +119,6 @@ namespace AssetsNet.API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("AssetsNet.API.Entities.UserFollow", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FollowerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "FollowerId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("UserFollows");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -297,49 +254,11 @@ namespace AssetsNet.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AssetsNet.API.Entities.Message", b =>
-                {
-                    b.HasOne("AssetsNet.API.Entities.User", "Recipient")
-                        .WithMany("MessagesRecieved")
-                        .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("AssetsNet.API.Entities.User", "Sender")
-                        .WithMany("MessagesSent")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Recipient");
-
-                    b.Navigation("Sender");
-                });
-
             modelBuilder.Entity("AssetsNet.API.Entities.Photo", b =>
                 {
                     b.HasOne("AssetsNet.API.Entities.User", "User")
                         .WithOne("ProfilePhoto")
                         .HasForeignKey("AssetsNet.API.Entities.Photo", "UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AssetsNet.API.Entities.UserFollow", b =>
-                {
-                    b.HasOne("AssetsNet.API.Entities.User", "Follower")
-                        .WithMany("Following")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("AssetsNet.API.Entities.User", "User")
-                        .WithMany("Followers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Follower");
 
                     b.Navigation("User");
                 });
@@ -397,14 +316,6 @@ namespace AssetsNet.API.Migrations
 
             modelBuilder.Entity("AssetsNet.API.Entities.User", b =>
                 {
-                    b.Navigation("Followers");
-
-                    b.Navigation("Following");
-
-                    b.Navigation("MessagesRecieved");
-
-                    b.Navigation("MessagesSent");
-
                     b.Navigation("ProfilePhoto");
                 });
 #pragma warning restore 612, 618

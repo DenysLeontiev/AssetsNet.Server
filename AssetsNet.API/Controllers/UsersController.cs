@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using AssetsNet.API.Controllers.Common;
+using AssetsNet.API.DTOs;
 using AssetsNet.API.DTOs.Photo;
+using AssetsNet.API.ExtensionMethods.ClaimsPrincipalExtensionMethods;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +43,23 @@ public class UsersController : BaseApiController
         }
     }
 
+    [HttpPut("update-user-requests-limit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateUserRequestsLimit([FromBody] UpdateUserRequestsLimitDto updateUserRequestsLimitDto)
+    {
+        try
+        {
+            string userId = User.GetCurrentUserId();
+
+            await _userRepository.UpdateUserRequestsLimitAsync(
+                updateUserRequestsLimitDto.TariffPlan,
+                updateUserRequestsLimitDto.PaymentState,
+                userId);
+
+            return Ok();
+    }
+    
     [HttpGet("followings/{userId}")]
     public async Task<ActionResult<List<User>>> GetUserFollowings(string userId)
     {
