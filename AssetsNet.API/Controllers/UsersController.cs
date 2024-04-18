@@ -58,6 +58,11 @@ public class UsersController : BaseApiController
                 userId);
 
             return Ok();
+        } 
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
     
     [HttpGet("followings/{userId}")]
