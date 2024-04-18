@@ -1,9 +1,10 @@
+using AssetsNet.API.Controllers.Common;
 using AssetsNet.API.DTOs.Liqpay;
 using AssetsNet.API.Interfaces.Liqpay;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetsNet.API.Controllers;
-public class PaymentController
+public class PaymentController : BaseApiController
 {
     private readonly IPaymentService _paymentService;
 
@@ -14,20 +15,17 @@ public class PaymentController
 
     [HttpPost("liqpay-url")]
     [ProducesResponseType(typeof(LiqpayResponseDto), StatusCodes.Status200OK)] 
-    public ActionResult<LiqpayResponseDto> GeneratePaymentUrl([FromBody] LiqpayRequestDto request)
+    public ActionResult<LiqpayResponseDto> GeneratePaymentUrl([FromQuery] LiqpayRequestDto request)
     {
-        var response = _paymentService.GeneratePaymentUrl(request);
+        try
+        {
+            var response = _paymentService.GeneratePaymentUrl(request);
 
-        return Ok(response);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
-
-    [HttpGet("liqpay-state/{orderId}")]
-    [ProducesResponseType(typeof(PaymentStateResponseDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PaymentStateResponseDto>> GetPaymentState([FromRoute] string orderId)
-    {
-        var response = await _paymentService.GetPaymentState(orderId);
-
-        return Ok(response);
-    }
-    
 }
