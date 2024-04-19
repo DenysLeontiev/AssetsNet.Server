@@ -12,14 +12,12 @@ public class MessageHub : Hub
 {
     private readonly AssetsDbContext _context;
     private readonly IMessageRepository _messageRepository;
-    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public MessageHub(AssetsDbContext context, IMessageRepository messageRepository, IUserRepository userRepository, IMapper mapper)
+    public MessageHub(AssetsDbContext context, IMessageRepository messageRepository, IMapper mapper)
     {
         _context = context;
         _messageRepository = messageRepository;
-        _userRepository = userRepository;
         _mapper = mapper;
     }
 
@@ -27,7 +25,6 @@ public class MessageHub : Hub
     {
         string currentUserId = Context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var httpContext = Context.GetHttpContext(); // here we get HttpContext
-        // var currentUsername = Context.User.GetUsername();
         var otherUserId = httpContext.Request.Query["user"];
         var groupName = $"thread-{currentUserId}-{otherUserId}";
 
@@ -76,20 +73,9 @@ public class MessageHub : Hub
 
         await _context.SaveChangesAsync();
 
-        // _messageRepository.SendMessageAsync(message);
-
-        // if (await _messageRepository.SaveAllAsync())
-        // {
         var groupName = $"thread-{currentUserId}-{sendMessageDto.RecipientId}";
 
-            // sends to message to thise who are listening to NewMessage
-            await Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
-        // }
-    }
-
-    public string GetGroupName(string caller, string otherName)
-    {
-        var stringComparison = string.CompareOrdinal(caller, otherName) < 0;
-        return stringComparison ? $"{caller}-{otherName}" : $"{otherName}-{caller}";
+        // sends to message to thise who are listening to NewMessage
+        await Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
     }
 }

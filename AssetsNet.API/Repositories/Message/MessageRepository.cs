@@ -14,7 +14,6 @@ public class MessageRepository : IMessageRepository
         _context = context;
     }
 
-
     public async Task<MessageDto> SendMessageAsync(string currentUserId, string recipientId, string content)
     {
         if (string.IsNullOrEmpty(content))
@@ -63,7 +62,7 @@ public class MessageRepository : IMessageRepository
     public async Task<List<Entities.Message>> GetMessages(string senderId, string recipientId)
     {
         var messages = await _context.Messages
-                .Include(u => u.Sender).ThenInclude(p => p.ProfilePhoto)
+                .Include(u => u.Sender)
                 .Include(u => u.Recipient).ThenInclude(p => p.ProfilePhoto)
                 .Where(m => m.RecipientId == recipientId && m.SenderId == senderId
                     || m.RecipientId == senderId && m.SenderId == recipientId
