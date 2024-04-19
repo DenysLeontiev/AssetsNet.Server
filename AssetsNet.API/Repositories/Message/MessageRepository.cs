@@ -14,7 +14,7 @@ public class MessageRepository : IMessageRepository
         _context = context;
     }
 
-    public async Task<MessageDto> SendMessageAsync(string currentUserId, string recipientId, string content)
+    public async Task<Entities.Message> SendMessageAsync(string currentUserId, string recipientId, string content)
     {
         if (string.IsNullOrEmpty(content))
         {
@@ -49,14 +49,7 @@ public class MessageRepository : IMessageRepository
 
         await _context.SaveChangesAsync();
 
-        var messageToReturn = new MessageDto
-        {
-            Id = message.Id,
-            Content = message.Content,
-            DateSent = DateTime.UtcNow,
-        };
-
-        return messageToReturn;
+        return message;
     }
 
     public async Task<List<Entities.Message>> GetMessages(string senderId, string recipientId)

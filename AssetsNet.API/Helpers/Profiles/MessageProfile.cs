@@ -11,6 +11,6 @@ public class MessageProfile : Profile
             CreateMap<Message, MessageDto>()
                 .ForMember(dest => dest.SenderName, src => src.MapFrom(opts => opts.Sender.UserName))
                 .ForMember(dest => dest.RecipientName, src => src.MapFrom(opts => opts.Recipient.UserName))
-                .ForMember(dest => dest.RecipientPhotoUrl, src => src.MapFrom(opts => opts.Recipient.ProfilePhoto.PhotoUrl));
+                .ForMember(dest => dest.RecipientPhotoUrl, src => src.MapFrom(opts => opts.Recipient.ProfilePhoto!.PhotoUrl));
     }
 }
