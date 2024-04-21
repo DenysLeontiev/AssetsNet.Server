@@ -116,7 +116,6 @@ public class UserRepository : IUserRepository
 
         return followers;
     }
-    //TODO: null response
     public async Task<Entities.User> GetUserByIdAsync(string userId)
     {
         var user = await _context.Users
