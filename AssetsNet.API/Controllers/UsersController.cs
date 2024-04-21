@@ -8,6 +8,7 @@ using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using AssetsNet.API.DTOs.User;
 using AutoMapper;
+using ChatGPT.Net.DTO.ChatGPT;
 
 namespace AssetsNet.API.Controllers;
 
@@ -62,8 +63,13 @@ public class UsersController : BaseApiController
                 userId);
 
             return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
-    
+
     [HttpGet("followings/{userId}")]
     public async Task<ActionResult<List<User>>> GetUserFollowings(string userId)
     {
