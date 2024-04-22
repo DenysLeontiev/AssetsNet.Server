@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using AssetsNet.API.ExtensionMethods;
+using AssetsNet.API.Hubs;
 using AssetsNet.API.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
@@ -38,14 +39,16 @@ builder.Services.AddSwaggerGen(options =>
 
 
 
-builder.Services.AddControllers().AddJsonOptions(x =>
-   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+// builder.Services.AddControllers().AddJsonOptions(x =>
+//    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.ConfigureAssetsDbContext(builder.Configuration);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.ConfigureAuthentification(builder.Configuration);
 builder.Services.ConfigureAutoMapper();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddCors();
 
@@ -72,6 +75,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<MessageHub>("/hubs/message");
 
 using var scope = app.Services.CreateScope();
 
