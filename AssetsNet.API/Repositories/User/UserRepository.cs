@@ -131,6 +131,7 @@ public class UserRepository : IUserRepository
     {
         var user = await _context.Users.Include(x => x.MessagesRecieved)
                                        .Include(x => x.MessagesSent)
+                                       .Include(x => x.ProfilePhoto)
                                        .AsNoTracking()
                                        .FirstOrDefaultAsync(x => x.Id.Equals(userId));
         if (user == null)
@@ -146,7 +147,7 @@ public class UserRepository : IUserRepository
         // Add conversations where user sent messages
         foreach (var recipientId in uniqueRecipientsSent)
         {
-            var recipient = await _context.Users.FindAsync(recipientId);
+            var recipient = await _context.Users.Include(x => x.ProfilePhoto).FirstOrDefaultAsync(x => x.Id.Equals(recipientId));
             if (recipient != null)
             {
                 conversations.Add(new Conversation
@@ -165,7 +166,7 @@ public class UserRepository : IUserRepository
         // Add conversations where user received messages
         foreach (var senderId in uniqueSendersReceived)
         {
-            var sender = await _context.Users.FindAsync(senderId);
+            var sender = await _context.Users.Include(x => x.ProfilePhoto).FirstOrDefaultAsync(x => x.Id.Equals(senderId));
             if (sender != null)
             {
                 conversations.Add(new Conversation

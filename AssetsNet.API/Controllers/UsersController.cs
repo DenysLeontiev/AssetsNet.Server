@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using AssetsNet.API.DTOs.User;
 using AutoMapper;
 using ChatGPT.Net.DTO.ChatGPT;
+using AssetsNet.API.Helpers;
 
 namespace AssetsNet.API.Controllers;
 
