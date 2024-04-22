@@ -154,8 +154,10 @@ public class UserRepository : IUserRepository
                 {
                     SenderName = user.UserName,
                     SenderId = user.Id,
+                    SenderPhotoUrl = user.ProfilePhoto?.PhotoUrl,
                     RecipientName = recipient.UserName,
-                    RecipientId = recipient.Id
+                    RecipientId = recipient.Id,
+                    RecipientPhotoUrl = recipient.ProfilePhoto?.PhotoUrl
                 });
             }
         }
@@ -173,8 +175,10 @@ public class UserRepository : IUserRepository
                 {
                     SenderName = sender.UserName,
                     SenderId = sender.Id,
+                    SenderPhotoUrl = sender.ProfilePhoto?.PhotoUrl,
                     RecipientName = user.UserName,
-                    RecipientId = user.Id
+                    RecipientId = user.Id,
+                    RecipientPhotoUrl = user.ProfilePhoto?.PhotoUrl
                 });
             }
         }
