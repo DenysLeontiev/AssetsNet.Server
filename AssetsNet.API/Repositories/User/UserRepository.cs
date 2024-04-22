@@ -126,4 +126,58 @@ public class UserRepository : IUserRepository
 
         return user;
     }
+
+    public async Task<List<Conversation>> GetConversationsByIdAsync(string userId)
+    {
+        var user = await _context.Users.Include(x => x.MessagesRecieved)
+                                       .Include(x => x.MessagesSent)
+                                       .AsNoTracking()
+                                       .FirstOrDefaultAsync(x => x.Id.Equals(userId));
+        if (user == null)
+        {
+            return new List<Conversation>();
+        }
+
+        List<Conversation> conversations = new List<Conversation>();
+
+        // Get unique recipient IDs from sent messages
+        var uniqueRecipientsSent = user.MessagesSent.Select(m => m.RecipientId).Distinct().ToList();
+
+        // Add conversations where user sent messages
+        foreach (var recipientId in uniqueRecipientsSent)
+        {
+            var recipient = await _context.Users.FindAsync(recipientId);
+            if (recipient != null)
+            {
+                conversations.Add(new Conversation
+                {
+                    SenderName = user.UserName,
+                    SenderId = user.Id,
+                    RecipientName = recipient.UserName,
+                    RecipientId = recipient.Id
+                });
+            }
+        }
+
+        // Get unique sender IDs from received messages
+        var uniqueSendersReceived = user.MessagesRecieved.Select(m => m.SenderId).Distinct().ToList();
+
+        // Add conversations where user received messages
+        foreach (var senderId in uniqueSendersReceived)
+        {
+            var sender = await _context.Users.FindAsync(senderId);
+            if (sender != null)
+            {
+                conversations.Add(new Conversation
+                {
+                    SenderName = sender.UserName,
+                    SenderId = sender.Id,
+                    RecipientName = user.UserName,
+                    RecipientId = user.Id
+                });
+            }
+        }
+
+        return conversations;
+    }
 }

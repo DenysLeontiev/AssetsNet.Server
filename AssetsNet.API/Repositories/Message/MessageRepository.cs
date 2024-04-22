@@ -65,4 +65,9 @@ public class MessageRepository : IMessageRepository
 
         return messages;
     }
+
+    public Task<List<Conversation>> GetConversations()
+    {
+        throw new NotImplementedException();
+    }
 }

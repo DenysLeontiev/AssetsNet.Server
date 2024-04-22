@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace AssetsNet.API.DTOs.User
+﻿namespace AssetsNet.API.DTOs.User
 {
     public class UserDto
     {

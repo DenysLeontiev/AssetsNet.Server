@@ -150,4 +150,11 @@ public class UsersController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpGet("conversations")]
+    public async Task<ActionResult<List<Conversation>>> GetConversations()
+    {
+        var convs = await _userRepository.GetConversationsByIdAsync(User.GetCurrentUserId());
+        return Ok(convs);
+    }
 }
