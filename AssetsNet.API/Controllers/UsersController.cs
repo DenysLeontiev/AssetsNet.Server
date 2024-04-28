@@ -6,16 +6,21 @@ using AssetsNet.API.ExtensionMethods.ClaimsPrincipalExtensionMethods;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using AssetsNet.API.DTOs.User;
+using AutoMapper;
+using ChatGPT.Net.DTO.ChatGPT;
 
 namespace AssetsNet.API.Controllers;
 
 public class UsersController : BaseApiController
 {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public UsersController(IUserRepository userRepository)
+    public UsersController(IUserRepository userRepository, IMapper mapper)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     [HttpPost("upload-profile-photo")]
@@ -58,13 +63,13 @@ public class UsersController : BaseApiController
                 userId);
 
             return Ok();
-        } 
+        }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
     }
-    
+
     [HttpGet("followings/{userId}")]
     public async Task<ActionResult<List<User>>> GetUserFollowings(string userId)
     {
@@ -119,6 +124,26 @@ public class UsersController : BaseApiController
             await _userRepository.FollowUserAsync(userId, userIdToFollow);
 
             return Ok($"User with ID {userId} is now following user with ID {userIdToFollow}.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<UserDto>> GetUserById(string userId)
+    {
+        try
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"User with ID {userId} not found.");
+            }
+
+            var userDto = _mapper.Map<UserDto>(user);
+            return Ok(userDto);
         }
         catch (Exception ex)
         {
