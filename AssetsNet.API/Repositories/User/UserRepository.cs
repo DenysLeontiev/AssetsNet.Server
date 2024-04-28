@@ -127,62 +127,20 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<List<Conversation>> GetConversationsByIdAsync(string userId)
+    public async Task<IEnumerable<Entities.Message>> GetConversationsByIdAsync(string userId)
     {
-        var user = await _context.Users.Include(x => x.MessagesRecieved)
-                                       .Include(x => x.MessagesSent)
-                                       .Include(x => x.ProfilePhoto)
-                                       .AsNoTracking()
-                                       .FirstOrDefaultAsync(x => x.Id.Equals(userId));
-        if (user == null)
-        {
-            return new List<Conversation>();
-        }
-
-        List<Conversation> conversations = new List<Conversation>();
-
-        // Get unique recipient IDs from sent messages
-        var uniqueRecipientsSent = user.MessagesSent.Select(m => m.RecipientId).Distinct().ToList();
-
-        // Add conversations where user sent messages
-        foreach (var recipientId in uniqueRecipientsSent)
-        {
-            var recipient = await _context.Users.Include(x => x.ProfilePhoto).FirstOrDefaultAsync(x => x.Id.Equals(recipientId));
-            if (recipient != null)
-            {
-                conversations.Add(new Conversation
-                {
-                    SenderName = user.UserName,
-                    SenderId = user.Id,
-                    SenderPhotoUrl = user.ProfilePhoto?.PhotoUrl,
-                    RecipientName = recipient.UserName,
-                    RecipientId = recipient.Id,
-                    RecipientPhotoUrl = recipient.ProfilePhoto?.PhotoUrl
-                });
-            }
-        }
-
-        // Get unique sender IDs from received messages
-        var uniqueSendersReceived = user.MessagesRecieved.Select(m => m.SenderId).Distinct().ToList();
-
-        // Add conversations where user received messages
-        foreach (var senderId in uniqueSendersReceived)
-        {
-            var sender = await _context.Users.Include(x => x.ProfilePhoto).FirstOrDefaultAsync(x => x.Id.Equals(senderId));
-            if (sender != null)
-            {
-                conversations.Add(new Conversation
-                {
-                    SenderName = sender.UserName,
-                    SenderId = sender.Id,
-                    SenderPhotoUrl = sender.ProfilePhoto?.PhotoUrl,
-                    RecipientName = user.UserName,
-                    RecipientId = user.Id,
-                    RecipientPhotoUrl = user.ProfilePhoto?.PhotoUrl
-                });
-            }
-        }
-
-        return conversations;
+        var messages = await _context.Messages
+            .Include(m => m.Recipient)
+                .ThenInclude(u => u!.ProfilePhoto)
+            .Include(m => m.Sender)
+                .ThenInclude(u => u!.ProfilePhoto)
+            .Where(m => m.SenderId == userId || m.RecipientId == userId)
+            .GroupBy(m => new { 
+                MinId = m.SenderId.CompareTo(m.RecipientId) < 0 ? m.SenderId : m.RecipientId,
+                MaxId = m.SenderId.CompareTo(m.RecipientId) < 0 ? m.RecipientId : m.SenderId })
+            .Select(g => g.OrderByDescending(m => m.DateSent).FirstOrDefault())
+            .ToListAsync();
+    
+        return messages!;
     }
 }
