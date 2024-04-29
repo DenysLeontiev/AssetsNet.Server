@@ -101,6 +101,7 @@ public class UserRepository : IUserRepository
     {
         var followings = await _context.UserFollows
             .Where(uf => uf.FollowerId == userId)
+            .Include(x => x.Follower.ProfilePhoto)
             .Select(uf => uf.User)
             .ToListAsync();
 
@@ -111,6 +112,7 @@ public class UserRepository : IUserRepository
     {
         var followers = await _context.UserFollows
             .Where(uf => uf.UserId == userId)
+            .Include(x => x.Follower.ProfilePhoto)
             .Select(uf => uf.Follower)
             .ToListAsync();
 

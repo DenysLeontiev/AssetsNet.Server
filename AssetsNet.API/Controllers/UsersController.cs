@@ -71,7 +71,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followings/{userId}")]
-    public async Task<ActionResult<List<User>>> GetUserFollowings(string userId)
+    public async Task<ActionResult<List<UserDto>>> GetUserFollowings(string userId)
     {
         try
         {
@@ -82,7 +82,9 @@ public class UsersController : BaseApiController
 
             var followings = await _userRepository.GetUserFollowingsAsync(userId);
 
-            return Ok(followings);
+            var mappedFollowings = _mapper.Map<List<UserDto>>(followings);
+
+            return Ok(mappedFollowings);
         }
         catch (Exception ex)
         {
@@ -91,7 +93,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followers/{userId}")]
-    public async Task<ActionResult<List<User>>> GetUserFollowers(string userId)
+    public async Task<ActionResult<List<UserDto>>> GetUserFollowers(string userId)
     {
         try
         {
@@ -102,7 +104,9 @@ public class UsersController : BaseApiController
 
             var followers = await _userRepository.GetUserFollowersAsync(userId);
 
-            return Ok(followers);
+            var mappedFollowers = _mapper.Map<List<UserDto>>(followers);
+
+            return Ok(mappedFollowers);
         }
         catch (Exception ex)
         {
