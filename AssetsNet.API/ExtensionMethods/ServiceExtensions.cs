@@ -7,6 +7,7 @@ using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.ChatGpt;
 using AssetsNet.API.Interfaces.Crypto;
 using AssetsNet.API.Interfaces.Email;
+using AssetsNet.API.Interfaces.Liqpay;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Reddit;
@@ -14,6 +15,7 @@ using AssetsNet.API.Interfaces.Repositories;
 using AssetsNet.API.Interfaces.Stock;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.Email;
+using AssetsNet.API.Repositories.Liqpay;
 using AssetsNet.API.Repositories.Message;
 using AssetsNet.API.Repositories.User;
 using AssetsNet.API.Seed;
@@ -78,6 +80,7 @@ public static class ServiceExtensions
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IPaymentService, PaymentService>();
 
         services.AddScoped<SeedRolesService>();
         services.AddScoped<SeedAdminAccountService>();

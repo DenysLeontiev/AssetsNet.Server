@@ -52,8 +52,10 @@ public class MessageHub : Hub
         await Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
     }
 
-    private string GetGroupName(string senderId, string recipientId)
-    {
-        return $"user-messages-{senderId}-{recipientId}";
-    }
+  private string GetGroupName(string senderId, string recipientId)
+  {
+      var sortedIds = new List<string> { senderId, recipientId }.OrderBy(id => id);
+    
+      return $"user-messages-{string.Join("-", sortedIds)}";
+  }
 }
