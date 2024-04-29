@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using AssetsNet.API.DTOs.User;
 using AutoMapper;
 using ChatGPT.Net.DTO.ChatGPT;
+using AssetsNet.API.Helpers;
+using AssetsNet.API.DTOs.Message;
 
 namespace AssetsNet.API.Controllers;
 
@@ -153,5 +155,15 @@ public class UsersController : BaseApiController
         {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpGet("conversations")]
+    public async Task<ActionResult<IEnumerable<MessageDto>>> GetConversations()
+    {
+        var convs = await _userRepository.GetConversationsByIdAsync(User.GetCurrentUserId());
+
+        var convsDto = _mapper.Map<IEnumerable<MessageDto>>(convs);
+
+        return Ok(convsDto);
     }
 }

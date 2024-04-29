@@ -10,4 +10,5 @@ public class MessageDto
     public string RecipientName { get; set; } = string.Empty;
     public string RecipientId { get; set; } = string.Empty;
     public string RecipientPhotoUrl { get; set; } = string.Empty;
+    public string SenderPhotoUrl { get; set; } = string.Empty;
 }

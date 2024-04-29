@@ -128,4 +128,21 @@ public class UserRepository : IUserRepository
 
         return user;
     }
+
+    public async Task<IEnumerable<Entities.Message>> GetConversationsByIdAsync(string userId)
+    {
+        var messages = await _context.Messages
+            .Include(m => m.Recipient)
+                .ThenInclude(u => u!.ProfilePhoto)
+            .Include(m => m.Sender)
+                .ThenInclude(u => u!.ProfilePhoto)
+            .Where(m => m.SenderId == userId || m.RecipientId == userId)
+            .GroupBy(m => new { 
+                MinId = m.SenderId.CompareTo(m.RecipientId) < 0 ? m.SenderId : m.RecipientId,
+                MaxId = m.SenderId.CompareTo(m.RecipientId) < 0 ? m.RecipientId : m.SenderId })
+            .Select(g => g.OrderByDescending(m => m.DateSent).FirstOrDefault())
+            .ToListAsync();
+    
+        return messages!;
+    }
 }
