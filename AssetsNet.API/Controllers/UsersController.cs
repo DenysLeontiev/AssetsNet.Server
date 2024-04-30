@@ -29,6 +29,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("upload-profile-photo")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PhotoDto>> UploadProfilePhoto([FromForm] UploadProfilePhotoDto uploadProfilePhotoDto)
     {
         try
@@ -76,6 +77,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followings/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDto>>> GetUserFollowings(string userId)
     {
         try
@@ -98,6 +100,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followers/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDto>>> GetUserFollowers(string userId)
     {
         try
@@ -120,6 +123,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("follow-user/{userIdToFollow}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> FollowUser(string userIdToFollow)
     {
         try
@@ -141,6 +145,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> GetUserById(string userId)
     {
         try
@@ -161,6 +166,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("conversations")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<MessageDto>>> GetConversations()
     {
         var convs = await _userRepository.GetConversationsByIdAsync(User.GetCurrentUserId());
@@ -171,6 +177,7 @@ public class UsersController : BaseApiController
     }
     
     [HttpGet("user-search/{username}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<SearchedUser>>> SearchUsersByUserName(string username)
     {
         var users = await _userRepository.SearchUsersByUsernameAsync(username);
