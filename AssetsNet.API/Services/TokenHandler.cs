@@ -20,9 +20,9 @@ public class TokenHandler : ITokenHandler
     {
         var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName), // Name
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()), // Id
-                new Claim(JwtRegisteredClaimNames.Email, user.Email), // Email
+                new(JwtRegisteredClaimNames.Name, user.UserName),
+                new(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Email, user.Email),
             };
 
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

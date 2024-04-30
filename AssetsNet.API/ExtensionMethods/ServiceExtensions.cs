@@ -7,6 +7,7 @@ using AssetsNet.API.Interfaces.Auth;
 using AssetsNet.API.Interfaces.ChatGpt;
 using AssetsNet.API.Interfaces.Crypto;
 using AssetsNet.API.Interfaces.Email;
+using AssetsNet.API.Interfaces.Liqpay;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Reddit;
@@ -14,6 +15,8 @@ using AssetsNet.API.Interfaces.Repositories;
 using AssetsNet.API.Interfaces.Stock;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.Email;
+using AssetsNet.API.Repositories.Liqpay;
+using AssetsNet.API.Repositories.Message;
 using AssetsNet.API.Repositories.User;
 using AssetsNet.API.Seed;
 using AssetsNet.API.Seed.Models;
@@ -76,6 +79,8 @@ public static class ServiceExtensions
         services.AddScoped<ITwitterService, TwitterService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IPaymentService, PaymentService>();
 
         services.AddScoped<SeedRolesService>();
         services.AddScoped<SeedAdminAccountService>();
@@ -100,6 +105,21 @@ public static class ServiceExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"])),
                     ValidateIssuer = false,
                     ValidateAudience = false,
+                };
+
+                opts.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            path.StartsWithSegments("/hubs"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
     }

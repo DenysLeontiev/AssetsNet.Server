@@ -4,5 +4,5 @@ namespace AssetsNet.API.Interfaces.ChatGpt;
 
 public interface IChatGptService
 {
-    Task<ChatGptResponseDto> QueryChatGpt(string question, string? conversationId);
+    Task<ChatGptResponseDto> QueryChatGpt(string question, string userId, string? conversationId);
 }
