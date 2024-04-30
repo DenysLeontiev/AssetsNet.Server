@@ -154,7 +154,7 @@ public class UserRepository : IUserRepository
             return null;
         }    
 
-        int maxAmountOfUsers = 15;
+        int maxAmountOfUsers = 100;
         return await _context.Users.Include(p => p.ProfilePhoto)
                                    .Where(x => x.NormalizedUserName.Contains(username.ToUpper()))
                                    .Select(x => new SearchedUser(x.UserName, x.Id, x.ProfilePhoto.PhotoUrl))
