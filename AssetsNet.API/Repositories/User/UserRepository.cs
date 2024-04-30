@@ -149,6 +149,11 @@ public class UserRepository : IUserRepository
 
     public async Task<List<SearchedUser>> SearchUsersByUsernameAsync(string username)
     {
+        if(string.IsNullOrEmpty(username))
+        {
+            return null;
+        }    
+
         int maxAmountOfUsers = 15;
         return await _context.Users.Include(p => p.ProfilePhoto)
                                    .Where(x => x.NormalizedUserName.Contains(username.ToUpper()))
