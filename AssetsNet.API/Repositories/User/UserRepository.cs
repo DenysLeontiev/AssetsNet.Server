@@ -151,7 +151,7 @@ public class UserRepository : IUserRepository
     {
         int maxAmountOfUsers = 15;
         return await _context.Users.Include(p => p.ProfilePhoto)
-                                   .Where(x => x.NormalizedUserName.Equals(username.ToUpper()))
+                                   .Where(x => x.NormalizedUserName.Contains(username.ToUpper()))
                                    .Select(x => new SearchedUser(x.UserName, x.Id, x.ProfilePhoto.PhotoUrl))
                                    .AsSplitQuery()
                                    .Take(maxAmountOfUsers)
