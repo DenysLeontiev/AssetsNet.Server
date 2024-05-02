@@ -63,14 +63,14 @@ public class AuthService : IAuthService
 
         if (userFromDb == null)
         {
-            throw new Exception("This user wasn`t found in database");
+            throw new Exception("Login or passsword is incorrect");
         }
 
         var result = await _signInManager.CheckPasswordSignInAsync(userFromDb, loginUserDto.Password, false);
 
         if (!result.Succeeded)
         {
-            throw new Exception("The password is incorrect");
+            throw new Exception("Login or passsword is incorrect");
         }
 
         return new UserJwtDto
