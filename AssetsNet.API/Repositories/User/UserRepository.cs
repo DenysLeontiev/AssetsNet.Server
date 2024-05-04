@@ -2,6 +2,7 @@
 using AssetsNet.API.DTOs.Photo;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Helpers;
+using AssetsNet.API.Helpers.User;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -144,5 +145,21 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     
         return messages!;
+    }
+
+    public async Task<List<SearchedUser>> SearchUsersByUsernameAsync(string username)
+    {
+        if(string.IsNullOrEmpty(username))
+        {
+            return null;
+        }    
+
+        int maxAmountOfUsers = 30;
+        return await _context.Users.Include(p => p.ProfilePhoto)
+                                   .Where(x => x.NormalizedUserName.Contains(username.ToUpper()))
+                                   .Select(x => new SearchedUser(x.UserName, x.Id, x.ProfilePhoto.PhotoUrl))
+                                   .AsSplitQuery()
+                                   .Take(maxAmountOfUsers)
+                                   .ToListAsync();
     }
 }
