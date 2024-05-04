@@ -1,4 +1,5 @@
 using System.Text.Json;
+using AssetsNet.API.Data;
 using AssetsNet.API.Interfaces.Twitter;
 using AssetsNet.API.Models.Twitter;
 using AssetsNet.API.Models.Twitter.TwitterUsersMedia;
@@ -12,16 +13,26 @@ public class TwitterService : ITwitterService
 {
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
+    private readonly AssetsDbContext _dbContext;
 
     public TwitterService(IConfiguration configuration,
-        HttpClient httpClient)
+        HttpClient httpClient,
+        AssetsDbContext dbContext)
     {
         _configuration = configuration;
         _httpClient = httpClient;
+        _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<TwitterPost>> GetTwitterPosts(string query, int? searchType = null)
+    public async Task<IEnumerable<TwitterPost>> GetTwitterPosts(string query, string userId, int? searchType = null)
     {
+        var user = await _dbContext.Users.FindAsync(userId);
+
+        if (user!.GptRequestsLeft <= 0)
+        {
+            throw new GptRequestsLimitExceededException("Gpt requests limit exceeded");
+        }
+
         string url = searchType != null ? $"https://twitter-api45.p.rapidapi.com/search.php?query={query}&search_type={(TwitterSeacrhType)searchType}" :
             $"https://twitter-api45.p.rapidapi.com/search.php?query={query}";
 

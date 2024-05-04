@@ -1,5 +1,6 @@
 using System.Collections;
 using AssetsNet.API.Controllers.Common;
+using AssetsNet.API.ExtensionMethods.ClaimsPrincipalExtensionMethods;
 using AssetsNet.API.Interfaces.News;
 using AssetsNet.API.Interfaces.Photo;
 using AssetsNet.API.Interfaces.Reddit;
@@ -8,6 +9,7 @@ using AssetsNet.API.Models.News;
 using AssetsNet.API.Models.Reddit;
 using AssetsNet.API.Models.Twitter;
 using AssetsNet.API.Models.Twitter.TwitterUsersMedia;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsAPI.Models;
 
@@ -42,6 +44,7 @@ public class NewsController : BaseApiController
         }
     }
 
+    [Authorize]
     [HttpGet("reddit/{subreddit}/{redditTimePosted}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RedditPost>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -49,9 +52,14 @@ public class NewsController : BaseApiController
     {
         try
         {
-            var data = await _redditService.GetRedditPosts(subreddit, redditTimePosted);
+            var userId = User.GetCurrentUserId();
+            var data = await _redditService.GetRedditPosts(subreddit, redditTimePosted, userId);
 
             return Ok(data);
+        }
+        catch (GptRequestsLimitExceededException ex)
+        {
+            return BadRequest(ex.Message);
         }
         catch (HttpRequestException e)
         {
@@ -59,6 +67,7 @@ public class NewsController : BaseApiController
         }
     }
 
+    [Authorize]
     [HttpGet("twitter/{query}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TwitterPost>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -66,9 +75,14 @@ public class NewsController : BaseApiController
     {
         try
         {
-            var data = await _twitterService.GetTwitterPosts(query, searchType);
+            var userId = User.GetCurrentUserId();
+            var data = await _twitterService.GetTwitterPosts(query, userId, searchType);
 
             return Ok(data);
+        }
+        catch (GptRequestsLimitExceededException ex)
+        {
+            return BadRequest(ex.Message);
         }
         catch (HttpRequestException ex)
         {
@@ -92,7 +106,6 @@ public class NewsController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
-
 
     [HttpGet("newsApi/{query}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Article>))]
