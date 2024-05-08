@@ -136,7 +136,7 @@ public class UsersController : BaseApiController
 
             await _userRepository.FollowUserAsync(userId, userIdToFollow);
 
-            return Ok($"User with ID {userId} is now following user with ID {userIdToFollow}.");
+            return Ok();
         }
         catch (Exception ex)
         {
