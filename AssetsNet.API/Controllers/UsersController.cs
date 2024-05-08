@@ -187,6 +187,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("get-followings-names")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<string>))]
     public async Task<ActionResult<List<string>>> GetFollowingsName()
     {
         var followedUsersUserNames = await _userRepository.GetUserFollowersUserName(User.GetCurrentUserId());
