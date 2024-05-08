@@ -185,4 +185,11 @@ public class UsersController : BaseApiController
 
         return Ok(users);
     }
+
+    [HttpGet("get-followings-names")]
+    public async Task<ActionResult<List<string>>> GetFollowingsName()
+    {
+        var followedUsersUserNames = await _userRepository.GetUserFollowersUserName(User.GetCurrentUserId());
+        return Ok(followedUsersUserNames);
+    }
 }
