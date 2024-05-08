@@ -9,7 +9,7 @@ public interface IUserRepository
 {
     Task<Entities.Photo> UploadProfilePhotoAsync(IFormFile file, string userId);
     Task UpdateUserRequestsLimitAsync(TariffPlansEnum tariff, int paymentState, string userId);
-    Task FollowUserAsync(string followerId, string userId);
+    Task<User> FollowUserAsync(string followerId, string userId);
     Task<IEnumerable<Message>> GetConversationsByIdAsync(string userId);
     Task<List<User>> GetUserFollowingsAsync(string userId);
     Task<List<User>> GetUserFollowersAsync(string userId);

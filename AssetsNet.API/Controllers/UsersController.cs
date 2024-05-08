@@ -123,8 +123,8 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("follow-user/{userIdToFollow}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> FollowUser(string userIdToFollow)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
+    public async Task<ActionResult<UserDto>> FollowUser(string userIdToFollow)
     {
         try
         {
@@ -134,9 +134,10 @@ public class UsersController : BaseApiController
                 return BadRequest("FollowerId and UserId are required.");
             }
 
-            await _userRepository.FollowUserAsync(userId, userIdToFollow);
+            var followedUser = await _userRepository.FollowUserAsync(userId, userIdToFollow);
+            var mappedFollowedUsers = _mapper.Map<UserDto>(followedUser);
 
-            return Ok();
+            return Ok(mappedFollowedUsers);
         }
         catch (Exception ex)
         {

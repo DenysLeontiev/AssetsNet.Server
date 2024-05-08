@@ -74,7 +74,7 @@ public class UserRepository : IUserRepository
         return photo;
     }
 
-    public async Task FollowUserAsync(string followerId, string userId)
+    public async Task<Entities.User> FollowUserAsync(string followerId, string userId)
     {
         var followerUser = await _context.Users.FindAsync(followerId)
             ?? throw new Exception("User is not found");
@@ -96,6 +96,8 @@ public class UserRepository : IUserRepository
 
         await _context.UserFollows.AddAsync(follow);
         await _context.SaveChangesAsync();
+
+        return userToFollow;
     }
 
     public async Task<List<Entities.User>> GetUserFollowingsAsync(string userId)
