@@ -17,4 +17,5 @@ public class User : IdentityUser
     public virtual ICollection<UserFollow> Following { get; set; }
     public List<Message> MessagesSent { get; set; }
     public List<Message> MessagesRecieved { get; set; }
+    public List<Request> RequestsToAI { get; set; }
 }
