@@ -1,3 +1,4 @@
+using AssetsNet.API.Data;
 using AssetsNet.API.Helpers.Reddit;
 using AssetsNet.API.Interfaces.Reddit;
 using AssetsNet.API.Models.Reddit;
@@ -9,15 +10,25 @@ public class RedditService : IRedditService
 {
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
+    private readonly AssetsDbContext _dbContext;
 
-    public RedditService(IConfiguration configuration, HttpClient httpClient)
+    public RedditService(IConfiguration configuration, HttpClient httpClient,
+        AssetsDbContext dbContext)
     {
         _configuration = configuration;
         _httpClient = httpClient;
+        _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<RedditPost>> GetRedditPosts(string subreddit, int timePosted)
+    public async Task<IEnumerable<RedditPost>> GetRedditPosts(string subreddit, int timePosted, string userId)
     {
+        var user = await _dbContext.Users.FindAsync(userId);
+
+        if (user!.GptRequestsLeft <= 0)
+        {
+            throw new GptRequestsLimitExceededException("Gpt requests limit exceeded");
+        }
+
         var stockApiKey = _configuration["RedditRapidApi:X-RapidAPI-Key"]
             ?? throw new ArgumentNullException("RedditRapidApi:X-RapidAPI-Key is not found in the configuration");
 
