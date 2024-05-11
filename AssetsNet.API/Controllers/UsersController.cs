@@ -168,7 +168,7 @@ public class UsersController : BaseApiController
     }
     
     [HttpGet("get-user-requests/{userId}")]
-    public async Task<ActionResult<RequestDto>> GetUserRequests(string userId)
+    public async Task<ActionResult<List<RequestDto>>> GetUserRequests(string userId)
     {
         var userRequests = await _userRepository.GetUserRequestsAsync(userId);
 

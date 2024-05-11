@@ -54,7 +54,8 @@ public class ChatGptService : IChatGptService
             };
             
             user.GptRequestsLeft--;
-            user.RequestsToAI.Add(request);
+            
+            await _dbContext.Requests.AddAsync(request);
 
             await _dbContext.SaveChangesAsync();
 
