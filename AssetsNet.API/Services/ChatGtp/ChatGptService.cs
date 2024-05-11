@@ -1,5 +1,6 @@
 using AssetsNet.API.Data;
 using AssetsNet.API.DTOs.ChatGpt;
+using AssetsNet.API.Entities;
 using AssetsNet.API.Interfaces.ChatGpt;
 using ChatGPT.Net;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,16 @@ public class ChatGptService : IChatGptService
 
             var response = await openai.Ask(question, conversationId);
 
+            var request = new Request
+            {
+                SenderId = userId,
+                RequestToAI = question,
+                ResponseFromAI = response,
+            };
+            
             user.GptRequestsLeft--;
+            
+            await _dbContext.Requests.AddAsync(request);
 
             await _dbContext.SaveChangesAsync();
 

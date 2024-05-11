@@ -4,16 +4,18 @@ using AssetsNet.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AssetsNet.API.Migrations
+namespace AssetsNet.API.Data
 {
     [DbContext(typeof(AssetsDbContext))]
-    partial class AssetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240508212429_AddRequestsHistory")]
+    partial class AddRequestsHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +51,7 @@ namespace AssetsNet.API.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("AssetsNet.API.Entities.Photo", b =>
@@ -75,7 +77,7 @@ namespace AssetsNet.API.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Photos", (string)null);
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("AssetsNet.API.Entities.Request", b =>
@@ -103,7 +105,7 @@ namespace AssetsNet.API.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Requests", (string)null);
+                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("AssetsNet.API.Entities.User", b =>
@@ -189,7 +191,7 @@ namespace AssetsNet.API.Migrations
 
                     b.HasIndex("FollowerId");
 
-                    b.ToTable("UserFollows", (string)null);
+                    b.ToTable("UserFollows");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -148,7 +148,7 @@ public class UserRepository : IUserRepository
     
         return messages!;
     }
-
+    
     public async Task<List<SearchedUser>> SearchUsersByUsernameAsync(string username)
     {
         if(string.IsNullOrEmpty(username))
@@ -163,5 +163,21 @@ public class UserRepository : IUserRepository
                                    .AsSplitQuery()
                                    .Take(maxAmountOfUsers)
                                    .ToListAsync();
+    }
+    
+    public async Task<List<Entities.Request>> GetUserRequestsAsync(string userId)
+    {
+        var requests = await _context.Requests
+            .Where(r => r.SenderId == userId)
+            .Select(r => new Entities.Request
+            {
+                Id = r.Id,
+                SenderId = r.SenderId,
+                RequestToAI = r.RequestToAI,
+                ResponseFromAI = r.ResponseFromAI,
+            })
+            .ToListAsync();
+    
+        return requests;
     }
 }

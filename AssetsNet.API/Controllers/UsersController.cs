@@ -185,4 +185,14 @@ public class UsersController : BaseApiController
 
         return Ok(users);
     }
+    
+    [HttpGet("get-user-requests/{userId}")]
+    public async Task<ActionResult<List<RequestDto>>> GetUserRequests(string userId)
+    {
+        var userRequests = await _userRepository.GetUserRequestsAsync(userId);
+
+        var userRequestsDto = _mapper.Map<List<RequestDto>>(userRequests);
+
+        return Ok(userRequestsDto);
+     }
 }

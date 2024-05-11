@@ -14,7 +14,7 @@ public class AssetsDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
+        
         builder.Entity<Message>()
                .HasOne(x => x.Sender)
                .WithMany(x => x.MessagesSent)
@@ -49,9 +49,15 @@ public class AssetsDbContext : IdentityDbContext<User>
             .HasOne(p => p.User)
             .WithOne(u => u.ProfilePhoto)
             .HasForeignKey<Photo>(p => p.UserId);
+
+        builder.Entity<Request>()
+            .HasOne(r => r.Sender)
+            .WithMany(u => u.RequestsToAI)
+            .HasForeignKey(r => r.SenderId);
     }
 
     public DbSet<Photo> Photos { get; set; }
     public DbSet<UserFollow> UserFollows { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<Request> Requests { get; set; }
 }
