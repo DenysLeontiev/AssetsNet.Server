@@ -140,21 +140,23 @@ public class UserRepository : IUserRepository
             .Include(m => m.Sender)
                 .ThenInclude(u => u!.ProfilePhoto)
             .Where(m => m.SenderId == userId || m.RecipientId == userId)
-            .GroupBy(m => new { 
+            .GroupBy(m => new
+            {
                 MinId = m.SenderId.CompareTo(m.RecipientId) < 0 ? m.SenderId : m.RecipientId,
-                MaxId = m.SenderId.CompareTo(m.RecipientId) < 0 ? m.RecipientId : m.SenderId })
+                MaxId = m.SenderId.CompareTo(m.RecipientId) < 0 ? m.RecipientId : m.SenderId
+            })
             .Select(g => g.OrderByDescending(m => m.DateSent).FirstOrDefault())
             .ToListAsync();
-    
+
         return messages!;
     }
 
     public async Task<List<SearchedUser>> SearchUsersByUsernameAsync(string username)
     {
-        if(string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(username))
         {
             return null;
-        }    
+        }
 
         int maxAmountOfUsers = 30;
         return await _context.Users.Include(p => p.ProfilePhoto)
@@ -163,5 +165,10 @@ public class UserRepository : IUserRepository
                                    .AsSplitQuery()
                                    .Take(maxAmountOfUsers)
                                    .ToListAsync();
+    }
+
+    public async Task<List<string>> GetUserFollowersUserName(string userId)
+    {
+        return await _context.UserFollows.Where(x => x.FollowerId.Equals(userId)).Select(x => x.User.UserName).ToListAsync();
     }
 }

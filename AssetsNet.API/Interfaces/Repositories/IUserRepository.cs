@@ -15,4 +15,5 @@ public interface IUserRepository
     Task<List<User>> GetUserFollowersAsync(string userId);
     Task<List<SearchedUser>> SearchUsersByUsernameAsync(string username);
     Task<Entities.User> GetUserByIdAsync(string userId);
+    Task<List<string>> GetUserFollowersUserName(string userId);
 }
