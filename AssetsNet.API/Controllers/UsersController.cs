@@ -11,6 +11,9 @@ using AutoMapper;
 using ChatGPT.Net.DTO.ChatGPT;
 using AssetsNet.API.Helpers;
 using AssetsNet.API.DTOs.Message;
+using AssetsNet.API.Helpers.User;
+using AssetsNet.API.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace AssetsNet.API.Controllers;
 
@@ -26,6 +29,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("upload-profile-photo")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PhotoDto>> UploadProfilePhoto([FromForm] UploadProfilePhotoDto uploadProfilePhotoDto)
     {
         try
@@ -73,6 +77,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followings/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDto>>> GetUserFollowings(string userId)
     {
         try
@@ -95,6 +100,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("followers/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDto>>> GetUserFollowers(string userId)
     {
         try
@@ -117,7 +123,8 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("follow-user/{userIdToFollow}")]
-    public async Task<IActionResult> FollowUser(string userIdToFollow)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
+    public async Task<ActionResult<UserDto>> FollowUser(string userIdToFollow)
     {
         try
         {
@@ -127,9 +134,10 @@ public class UsersController : BaseApiController
                 return BadRequest("FollowerId and UserId are required.");
             }
 
-            await _userRepository.FollowUserAsync(userId, userIdToFollow);
+            var followedUser = await _userRepository.FollowUserAsync(userId, userIdToFollow);
+            var mappedFollowedUsers = _mapper.Map<UserDto>(followedUser);
 
-            return Ok($"User with ID {userId} is now following user with ID {userIdToFollow}.");
+            return Ok(mappedFollowedUsers);
         }
         catch (Exception ex)
         {
@@ -138,6 +146,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> GetUserById(string userId)
     {
         try
@@ -158,6 +167,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("conversations")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<MessageDto>>> GetConversations()
     {
         var convs = await _userRepository.GetConversationsByIdAsync(User.GetCurrentUserId());
@@ -165,5 +175,22 @@ public class UsersController : BaseApiController
         var convsDto = _mapper.Map<IEnumerable<MessageDto>>(convs);
 
         return Ok(convsDto);
+    }
+    
+    [HttpGet("user-search/{username}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<SearchedUser>>> SearchUsersByUserName(string username)
+    {
+        var users = await _userRepository.SearchUsersByUsernameAsync(username);
+
+        return Ok(users);
+    }
+
+    [HttpGet("get-followings-names")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<string>))]
+    public async Task<ActionResult<List<string>>> GetFollowingsName()
+    {
+        var followedUsersUserNames = await _userRepository.GetUserFollowersUserName(User.GetCurrentUserId());
+        return Ok(followedUsersUserNames);
     }
 }
