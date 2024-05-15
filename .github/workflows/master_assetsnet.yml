@@ -24,9 +24,6 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        env:
-            ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
-            OpenAiApiKey: ${{ secrets.OPEN_AI_API_KEY }}
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp

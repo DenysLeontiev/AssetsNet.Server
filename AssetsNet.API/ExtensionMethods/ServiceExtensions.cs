@@ -39,7 +39,7 @@ public static class ServiceExtensions
 {
     public static void ConfigureAssetsDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? configuration.GetConnectionString("DefaultConnection");
+        string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<AssetsDbContext>(opts => opts.UseSqlServer(connectionString));
     }
 
