@@ -36,8 +36,7 @@ public class ChatGptService : IChatGptService
             throw new ArgumentNullException(nameof(question));
         }
 
-        var openAiKey = _configuration["ChatGpt:ApiKey"] 
-            ?? throw new ArgumentNullException("ChatGpt:ApiKey");
+        var openAiKey = Environment.GetEnvironmentVariable("OpenAiApiKey") ?? _configuration["OpenAi:ApiKey"];
 
         try
         {
