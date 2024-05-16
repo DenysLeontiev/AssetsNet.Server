@@ -34,4 +34,18 @@ public class StocksController : BaseApiController
         var stock = await _stockService.GetStockData(stockName);
         return Ok(stock);
     }
+
+    [HttpGet("stock-names-list")]
+    public async Task<ActionResult<IEnumerable<string>>> GetStockNamesList()
+    {
+        try
+        {
+            var stockNames = await _stockService.GetStockNamesList();
+            return Ok(stockNames);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
