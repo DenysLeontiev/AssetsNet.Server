@@ -8,11 +8,15 @@ public class StockService : IStockService
 {
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
+    private readonly string _filePath;
 
-    public StockService(IConfiguration configuration, HttpClient httpClient)
+
+    public StockService(IConfiguration configuration, HttpClient httpClient, IWebHostEnvironment env)
     {
         _configuration = configuration;
         _httpClient = httpClient;
+
+        _filePath = Path.Combine(env.ContentRootPath, "exchangeSymbols.json");
     }
 
     public async Task<StockData> GetStockData(string stockName)
@@ -82,5 +86,26 @@ public class StockService : IStockService
         }
 
         return stockDataList;
+    }
+
+    public async Task<IEnumerable<string>> GetStockNamesList()
+    {
+        try
+        {
+            if (File.Exists(_filePath))
+            {
+                var json = await File.ReadAllTextAsync(_filePath);
+                var exchangeSymbols = JsonConvert.DeserializeObject<List<string>>(json);
+                return exchangeSymbols;
+            }
+            else
+            {
+                throw new FileNotFoundException("File with exchange symbols is not found");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 }
