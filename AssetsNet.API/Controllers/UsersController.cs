@@ -193,4 +193,24 @@ public class UsersController : BaseApiController
         var followedUsersUserNames = await _userRepository.GetUserFollowersUserName(User.GetCurrentUserId());
         return Ok(followedUsersUserNames);
     }
+
+    [HttpPut("update-user-info")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<UserDto>> UpdateUserInfo([FromBody] UpdateUserInfoDto updateUserInfoDto)
+    {
+        try
+        {
+            string userId = User.GetCurrentUserId();
+
+            var user = await _userRepository.UpdateUserInfoAsync(updateUserInfoDto, userId);
+
+            var mappedUser = _mapper.Map<UserDto>(user);
+
+            return Ok(mappedUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

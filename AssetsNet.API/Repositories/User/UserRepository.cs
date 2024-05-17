@@ -1,5 +1,6 @@
 ﻿using AssetsNet.API.Data;
 using AssetsNet.API.DTOs.Photo;
+using AssetsNet.API.DTOs.User;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Helpers;
 using AssetsNet.API.Helpers.User;
@@ -170,5 +171,25 @@ public class UserRepository : IUserRepository
     public async Task<List<string>> GetUserFollowersUserName(string userId)
     {
         return await _context.UserFollows.Where(x => x.FollowerId.Equals(userId)).Select(x => x.User.UserName).ToListAsync();
+    }
+
+    public async Task<Entities.User> UpdateUserInfoAsync(UpdateUserInfoDto userInfo, string userId)
+    {
+        var user = await _context.Users.
+            Include(u => u.ProfilePhoto)
+            .FirstOrDefaultAsync(x => x.Id.Equals(userId))
+            ?? throw new Exception("User is not found");
+
+        user.FirstName = userInfo.FirstName;
+        user.LastName = userInfo.LastName;
+        user.Description = userInfo.Description;
+        user.Email = userInfo.Email;
+        user.NormalizedEmail = userInfo.Email.ToUpper();
+        user.UserName = userInfo.Username;
+        user.NormalizedUserName = userInfo.Username.ToUpper();
+
+        await _context.SaveChangesAsync();
+
+        return user;
     }
 }
