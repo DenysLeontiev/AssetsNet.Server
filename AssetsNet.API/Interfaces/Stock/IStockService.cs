@@ -6,4 +6,5 @@ public interface IStockService
 {
     Task<StockData> GetStockData(string stockName);
     Task<IEnumerable<HeaderStockData>> GetStockDataList(IEnumerable<string> stockNames);
+    Task <IEnumerable<string>> GetStockNamesList();
 }

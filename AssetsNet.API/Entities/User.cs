@@ -10,6 +10,9 @@ public class User : IdentityUser
         GptRequestsLeft = TariffPlanConsts.FreeGptRequests;
     }
 
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Description { get; set; }
     public int VerificationCode { get; set; }
     public int GptRequestsLeft { get; set; }
     public Photo? ProfilePhoto { get; set; }

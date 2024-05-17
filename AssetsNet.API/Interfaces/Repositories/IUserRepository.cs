@@ -2,6 +2,7 @@
 using AssetsNet.API.Helpers;
 using AssetsNet.API.Entities;
 using AssetsNet.API.Helpers.User;
+using AssetsNet.API.DTOs.User;
 
 namespace AssetsNet.API.Interfaces.Repositories;
 
@@ -16,4 +17,5 @@ public interface IUserRepository
     Task<List<SearchedUser>> SearchUsersByUsernameAsync(string username);
     Task<Entities.User> GetUserByIdAsync(string userId);
     Task<List<string>> GetUserFollowersUserName(string userId);
+    Task<Entities.User> UpdateUserInfoAsync(UpdateUserInfoDto userInfo, string userId);
 }
